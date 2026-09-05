@@ -1,0 +1,128 @@
+{
+  "source": "/Users/sanaeseto/kotsukotsubank/コツコツバンク/ProgressManagementView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "進捗管理",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 192
+        }
+      },
+      {
+        "comment": "",
+        "key": "タスク達成状況",
+        "location": {
+          "startingColumn": 54,
+          "startingLine": 65
+        }
+      },
+      {
+        "comment": "",
+        "key": "達成額: %@ / %@",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 84
+        }
+      },
+      {
+        "comment": "",
+        "key": "目標設定日: %@",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 92
+        }
+      },
+      {
+        "comment": "",
+        "key": "目標がまだ設定されていません",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 103
+        }
+      },
+      {
+        "comment": "",
+        "key": "まだ実績がありません",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 127
+        }
+      },
+      {
+        "comment": "",
+        "key": "今週のがんばり",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "今週のハイライト",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 122
+        }
+      },
+      {
+        "comment": "",
+        "key": "曜日",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 114
+        }
+      },
+      {
+        "comment": "",
+        "key": "金額",
+        "location": {
+          "startingColumn": 77,
+          "startingLine": 114
+        }
+      },
+      {
+        "comment": "",
+        "key": "曜日",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 117
+        }
+      },
+      {
+        "comment": "",
+        "key": "金額",
+        "location": {
+          "startingColumn": 78,
+          "startingLine": 117
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@が「%@」を達成しました +%@",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 135
+        }
+      },
+      {
+        "comment": "",
+        "key": "達成したご褒美",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 149
+        }
+      },
+      {
+        "comment": "",
+        "key": "サンプルデータを追加(動作確認用)",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 181
+        }
+      }
+    ]
+  },
+  "version": 1
+}

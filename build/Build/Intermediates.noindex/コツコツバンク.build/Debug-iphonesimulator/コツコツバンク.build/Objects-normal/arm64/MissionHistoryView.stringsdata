@@ -1,0 +1,40 @@
+{
+  "source": "/Users/sanaeseto/kotsukotsubank/コツコツバンク/MissionHistoryView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "タスク履歴",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 41
+        }
+      },
+      {
+        "comment": "",
+        "key": "まだ履歴がありません",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 28
+        }
+      },
+      {
+        "comment": "",
+        "key": "+%@",
+        "location": {
+          "startingColumn": 52,
+          "startingLine": 112
+        }
+      },
+      {
+        "comment": "",
+        "key": "+%@%@",
+        "location": {
+          "startingColumn": 122,
+          "startingLine": 112
+        }
+      }
+    ]
+  },
+  "version": 1
+}

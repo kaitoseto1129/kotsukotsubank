@@ -1,0 +1,64 @@
+{
+  "source": "/Users/sanaeseto/kotsukotsubank/コツコツバンク/MissionCameraView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "カメラが使えません",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 119
+        }
+      },
+      {
+        "comment": "",
+        "key": "写真を撮ってね",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 23
+        }
+      },
+      {
+        "comment": "",
+        "key": "画像選択",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "シャッター",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 72
+        }
+      },
+      {
+        "comment": "",
+        "key": "これでOK!",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 87
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 120
+        }
+      },
+      {
+        "comment": "",
+        "key": "この端末ではカメラが使用できないため、「画像選択」から写真を選んでください。",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 122
+        }
+      }
+    ]
+  },
+  "version": 1
+}

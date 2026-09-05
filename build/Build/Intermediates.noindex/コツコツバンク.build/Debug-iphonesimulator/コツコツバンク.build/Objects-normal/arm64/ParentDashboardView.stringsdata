@@ -1,0 +1,104 @@
+{
+  "source": "/Users/sanaeseto/kotsukotsubank/コツコツバンク/ParentDashboardView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "コツコツバンク",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 132
+        }
+      },
+      {
+        "comment": "",
+        "key": "お子様が登録されていません",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 124
+        }
+      },
+      {
+        "comment": "",
+        "key": "お子様",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "保護者モード",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 43
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@のサポート中",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "👑🎉 %@達成!",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 63
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@が%lld日連続でお手伝いを頑張りました。今日はあなたの番です!",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 65
+        }
+      },
+      {
+        "comment": "",
+        "key": "お子様がお願い内容を選んでいます…",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 79
+        }
+      },
+      {
+        "comment": "",
+        "key": "お手伝いした!",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "目標・ご褒美設定",
+        "location": {
+          "startingColumn": 106,
+          "startingLine": 107
+        }
+      },
+      {
+        "comment": "",
+        "key": "タスク管理・承認",
+        "location": {
+          "startingColumn": 89,
+          "startingLine": 113
+        }
+      },
+      {
+        "comment": "",
+        "key": "進捗管理",
+        "location": {
+          "startingColumn": 106,
+          "startingLine": 119
+        }
+      }
+    ]
+  },
+  "version": 1
+}

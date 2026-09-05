@@ -1,0 +1,56 @@
+{
+  "source": "/Users/sanaeseto/kotsukotsubank/コツコツバンク/MissionCommentSubmitView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "ミッション: %@",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 22
+        }
+      },
+      {
+        "comment": "",
+        "key": "タスク代: +%@",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 28
+        }
+      },
+      {
+        "comment": "",
+        "key": "今日もえらいね!",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "コメント",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "コメントを入力",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 49
+        }
+      },
+      {
+        "comment": "",
+        "key": "送信する",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 63
+        }
+      }
+    ]
+  },
+  "version": 1
+}

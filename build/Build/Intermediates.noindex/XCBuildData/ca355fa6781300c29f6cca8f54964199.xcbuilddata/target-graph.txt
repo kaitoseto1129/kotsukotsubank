@@ -1,0 +1,2 @@
+Target dependency graph (1 target)
+Target 'コツコツバンク' in project 'コツコツバンク' (no dependencies)

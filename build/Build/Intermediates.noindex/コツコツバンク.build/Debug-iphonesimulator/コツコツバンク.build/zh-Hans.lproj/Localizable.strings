@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>%@ / %@</key>
+	<string>%@ / %@</string>
+	<key>%@が「%@」を完了しました。承認してあげましょう!</key>
+	<string>%@ 完成了「%@」，快去审批吧！</string>
+	<key>%@が「%@」を達成しました +%@</key>
+	<string>%@ 完成了「%@」 +%@</string>
+	<key>%@が届くよ!</key>
+	<string>%@ 就要到手啦！</string>
+	<key>%@のサポート中</key>
+	<string>正在协助 %@</string>
+	<key>+%@</key>
+	<string>+%@</string>
+	<key>+%@%@</key>
+	<string>+%@%@</string>
+	<key>/10分</key>
+	<string>/10分钟</string>
+	<key>/時間</key>
+	<string>/小时</string>
+	<key>4桁の暗証番号</key>
+	<string>4位数密码</string>
+	<key>Face IDでログイン</key>
+	<string>使用 Face ID 登录</string>
+	<key>OK</key>
+	<string>好的</string>
+	<key>OK!</key>
+	<string>好的！</string>
+	<key>amazon等商品リンク</key>
+	<string>Amazon 等商品链接</string>
+	<key>「%@」を削除</key>
+	<string>删除「%@」</string>
+	<key>「%@」を削除しますか?</key>
+	<string>确定要删除「%@」吗？</string>
+	<key>おうちのお手伝いなど、親が決めたミッションに挑戦しよう。</key>
+	<string>挑战家长设定的任务，比如帮忙做家务。</string>
+	<key>おうちの人より: %@</key>
+	<string>来自家人：%@</string>
+	<key>おかえりなさい</key>
+	<string>欢迎回来</string>
+	<key>おめでとう!</key>
+	<string>恭喜！</string>
+	<key>おわったら下の「できた!」を押してね</key>
+	<string>完成后请点击下方的「完成！」</string>
+	<key>お名前</key>
+	<string>姓名</string>
+	<key>お子様</key>
+	<string>孩子</string>
+	<key>お子様(最大5人)</key>
+	<string>孩子（最多5人）</string>
+	<key>お子様が登録されていません</key>
+	<string>尚未添加孩子</string>
+	<key>お子様のコメント</key>
+	<string>孩子的留言</string>
+	<key>お子様の情報</key>
+	<string>孩子信息</string>
+	<key>お子様へのメッセージ(任意。却下の理由もここに)</key>
+	<string>给孩子的留言（选填，退回理由也可写在这里）</string>
+	<key>お子様を編集</key>
+	<string>编辑孩子信息</string>
+	<key>お子様を追加</key>
+	<string>添加孩子</string>
+	<key>お手伃いをがんばって、
+コツコツ貯めよう!</key>
+	<string>努力做家务，
+慢慢积攒吧！</string>
+	<key>お手伝い</key>
+	<string>家务</string>
+	<key>お手伝いをがんばって、
+コツコツ貯めよう!</key>
+	<string>努力做家务，
+慢慢积攒吧！</string>
+	<key>お皿洗い(10分)</key>
+	<string>洗碗（10分钟）</string>
+	<key>お風呂掃除</key>
+	<string>打扫浴室</string>
+	<key>このカテゴリのタスクはありません</key>
+	<string>此分类下没有任务</string>
+	<key>このメールアドレスは既に登録されています</key>
+	<string>该邮箱地址已被注册</string>
+	<key>この端末ではカメラが使用できないため、「写真から選ぶ」から選んでください。</key>
+	<string>此设备无法使用相机，请从“从照片中选择”中选择。</string>
+	<key>この端末ではカメラが使用できないため、「写真を選ぶ」から選んでください。</key>
+	<string>此设备无法使用相机，请从“选择照片”中选择。</string>
+	<key>この端末ではカメラが使用できないため、「画像選択」から写真を選んでください。</key>
+	<string>此设备无法使用相机，请从“选择照片”中选择照片。</string>
+	<key>これでOK!</key>
+	<string>就这样吧！</string>
+	<key>ご褒美の画像を選ぶ</key>
+	<string>选择奖励图片</string>
+	<key>ご褒美をゲット</key>
+	<string>获得奖励</string>
+	<key>さっそく使ってみましょう</key>
+	<string>马上开始使用吧</string>
+	<key>すべて</key>
+	<string>全部</string>
+	<key>だれがつかう?</key>
+	<string>谁在使用？</string>
+	<key>できた!</key>
+	<string>完成！</string>
+	<key>なわとび</key>
+	<string>跳绳</string>
+	<key>のこり %@</key>
+	<string>还差 %@</string>
+	<key>はいる</key>
+	<string>进入</string>
+	<key>はじめて保護者モードに入ります。
+これから使う4桁の暗証番号を決めてください。</key>
+	<string>首次进入保护者模式。
+请设置今后使用的4位数密码。</string>
+	<key>はじめる</key>
+	<string>开始使用</string>
+	<key>または</key>
+	<string>或</string>
+	<key>まだ実績がありません</key>
+	<string>暂无成果</string>
+	<key>まだ履歴がありません</key>
+	<string>暂无记录</string>
+	<key>よくあるタスクから選ぶ</key>
+	<string>从常用任务中选择</string>
+	<key>アイコン</key>
+	<string>图标</string>
+	<key>アイコンをえらんでね</key>
+	<string>请选择图标</string>
+	<key>アカウント</key>
+	<string>账户</string>
+	<key>アカウントが見つかりません</key>
+	<string>未找到账户</string>
+	<key>アカウントをお持ちでない方はこちら</key>
+	<string>还没有账户？点击这里</string>
+	<key>カテゴリ</key>
+	<string>分类</string>
+	<key>カテゴリで絞り込み</key>
+	<string>按分类筛选</string>
+	<key>カメラが使えません</key>
+	<string>无法使用相机</string>
+	<key>カラー</key>
+	<string>颜色</string>
+	<key>キャンセル</key>
+	<string>取消</string>
+	<key>コツコツバンクとは?</key>
+	<string>什么是 KotsuKotsu Bank?</string>
+	<key>コメント</key>
+	<string>留言</string>
+	<key>コメントを入力</key>
+	<string>输入留言</string>
+	<key>ゴミ出し</key>
+	<string>倒垃圾</string>
+	<key>サンプルデータを追加(動作確認用)</key>
+	<string>添加示例数据（用于测试）</string>
+	<key>シャッター</key>
+	<string>拍照</string>
+	<key>スタート</key>
+	<string>开始</string>
+	<key>タイマーで作業して、終わったら写真とコメントを送ろう。</key>
+	<string>使用计时器完成任务，完成后发送照片和留言。</string>
+	<key>タスクを編集</key>
+	<string>编辑任务</string>
+	<key>タスクを追加</key>
+	<string>添加任务</string>
+	<key>タスク代: +%@</key>
+	<string>任务报酬：+%@</string>
+	<key>タスク価格</key>
+	<string>任务金额</string>
+	<key>タスク内容</key>
+	<string>任务内容</string>
+	<key>タスク名</key>
+	<string>任务名称</string>
+	<key>タスク履歴</key>
+	<string>任务记录</string>
+	<key>タスク承認</key>
+	<string>任务审批</string>
+	<key>タスク管理・承認</key>
+	<string>任务管理与审批</string>
+	<key>タスク詳細</key>
+	<string>任务详情</string>
+	<key>タスク達成状況</key>
+	<string>任务达成情况</string>
+	<key>テストで100点</key>
+	<string>考试满分</string>
+	<key>テストで80点以上</key>
+	<string>考试80分以上</string>
+	<key>ドル($)</key>
+	<string>美元 ($)</string>
+	<key>パスワード</key>
+	<string>密码</string>
+	<key>パスワード(4文字以上)</key>
+	<string>密码（4位以上）</string>
+	<key>パスワード(確認)</key>
+	<string>密码（确认）</string>
+	<key>パスワードが一致しません</key>
+	<string>密码不一致</string>
+	<key>パスワードが違います</key>
+	<string>密码错误</string>
+	<key>パスワードを忘れた方</key>
+	<string>忘记密码？</string>
+	<key>ベッドメイキング</key>
+	<string>整理床铺</string>
+	<key>ミッション</key>
+	<string>任务</string>
+	<key>ミッション: %@</key>
+	<string>任务：%@</string>
+	<key>ミッションをこなそう</key>
+	<string>完成任务</string>
+	<key>ミッション中!</key>
+	<string>任务进行中！</string>
+	<key>ミッション準備中</key>
+	<string>准备开始任务</string>
+	<key>メッセージを読み上げる</key>
+	<string>朗读留言</string>
+	<key>メールアドレス</key>
+	<string>邮箱地址</string>
+	<key>リンクの横のボタンで、商品名・画像・値段の取得を試せます(サイトによっては取得できないことがあります)</key>
+	<string>点击链接旁的按钮可尝试获取商品名称、图片和价格（部分网站可能无法获取）。</string>
+	<key>ログアウト</key>
+	<string>退出登录</string>
+	<key>ログイン</key>
+	<string>登录</string>
+	<key>ログインパスワード</key>
+	<string>登录密码</string>
+	<key>ログインパスワードが違います</key>
+	<string>登录密码错误</string>
+	<key>ログインパスワードで本人確認をしたうえで、保護者パスワードを再設定します。</key>
+	<string>请先用登录密码验证身份，然后重新设置保护者密码。</string>
+	<key>上の「よくあるタスクから選ぶ」から選ぶか、タスク名: 「お皿洗い」 タスク価格: 「50」(固定額) または「300」(時給)のように自由入力もできます</key>
+	<string>可以从上方「常用任务中选择」，也可以自由输入，例如任务名称：「洗碗」 任务金额：「50」（固定金额）或「300」（按小时计费）。</string>
+	<key>今日のヒント: 最後に見直しをしよう!</key>
+	<string>今日小贴士：完成后再检查一遍！</string>
+	<key>今日のミッション</key>
+	<string>今日任务</string>
+	<key>今日のミッションはまだありません</key>
+	<string>今天还没有任务</string>
+	<key>今日もえらいね!</key>
+	<string>今天也很棒哦！</string>
+	<key>今週のがんばり</key>
+	<string>本周努力</string>
+	<key>今週のハイライト</key>
+	<string>本周亮点</string>
+	<key>会員登録</key>
+	<string>注册</string>
+	<key>保存</key>
+	<string>保存</string>
+	<key>保護者</key>
+	<string>家长</string>
+	<key>保護者が承認</key>
+	<string>家长审批</string>
+	<key>保護者が確認すると、ミッションの金額がチャージされるよ。</key>
+	<string>家长确认后，任务金额就会入账。</string>
+	<key>保護者の暗証番号を入力</key>
+	<string>输入保护者密码</string>
+	<key>保護者より: %@</key>
+	<string>来自家长：%@</string>
+	<key>保護者パスワードを設定</key>
+	<string>设置保护者密码</string>
+	<key>保護者パスワード再設定</key>
+	<string>重新设置保护者密码</string>
+	<key>保護者モード</key>
+	<string>家长模式</string>
+	<key>保護者モードについて</key>
+	<string>关于家长模式</string>
+	<key>値段</key>
+	<string>价格</string>
+	<key>入力例</key>
+	<string>输入示例</string>
+	<key>公園でランニング</key>
+	<string>在公园跑步</string>
+	<key>円(¥)</key>
+	<string>日元 (¥)</string>
+	<key>再設定する</key>
+	<string>重新设置</string>
+	<key>再開する</key>
+	<string>继续</string>
+	<key>写真から選ぶ</key>
+	<string>从照片中选择</string>
+	<key>写真を撮ってね</key>
+	<string>请拍一张照片</string>
+	<key>写真を撮る</key>
+	<string>拍照</string>
+	<key>写真を選ぶ</key>
+	<string>选择照片</string>
+	<key>分給</key>
+	<string>每10分钟</string>
+	<key>削除</key>
+	<string>删除</string>
+	<key>勉強</key>
+	<string>学习</string>
+	<key>却下</key>
+	<string>退回</string>
+	<key>却下の理由</key>
+	<string>退回理由</string>
+	<key>商品名</key>
+	<string>商品名称</string>
+	<key>商品情報を取得できませんでした。手入力してください。</key>
+	<string>无法获取商品信息，请手动输入。</string>
+	<key>固定額</key>
+	<string>固定金额</string>
+	<key>子どもの日々の努力を記録し、親が承認し、ご褒美を受け取るまでの一連の流れをデジタル化するアプリです。</key>
+	<string>这是一款将孩子每日努力的记录、家长审批、直到获得奖励的整个流程数字化的应用。</string>
+	<key>完了・却下したタスク</key>
+	<string>已完成・已退回的任务</string>
+	<key>家族みんなでコツコツ貯めよう</key>
+	<string>全家一起慢慢存钱吧</string>
+	<key>宿題を当日1時間以内に終わらせる</key>
+	<string>当天1小时内完成作业</string>
+	<key>差し戻し</key>
+	<string>已退回</string>
+	<key>差し戻し: %@</key>
+	<string>被退回：%@</string>
+	<key>戻る</key>
+	<string>返回</string>
+	<key>承認</key>
+	<string>批准</string>
+	<key>承認待ち</key>
+	<string>待审批</string>
+	<key>承認待ちのタスクはありません</key>
+	<string>没有待审批的任务</string>
+	<key>承認済み</key>
+	<string>已批准</string>
+	<key>掃除機がけ</key>
+	<string>吸尘</string>
+	<key>撮影する</key>
+	<string>拍照</string>
+	<key>新しい4桁の暗証番号</key>
+	<string>新的4位数密码</string>
+	<key>新規会員登録</key>
+	<string>新用户注册</string>
+	<key>新規会員登録2</key>
+	<string>新用户注册</string>
+	<key>既にアカウントをお持ちの方はこちら</key>
+	<string>已有账户？点击这里</string>
+	<key>時給</key>
+	<string>按小时计费</string>
+	<key>暗証番号(確認)</key>
+	<string>密码（确认）</string>
+	<key>暗証番号が一致しません</key>
+	<string>密码不一致</string>
+	<key>暗証番号が違います</key>
+	<string>密码错误</string>
+	<key>曜日</key>
+	<string>星期</string>
+	<key>期限</key>
+	<string>截止日期</string>
+	<key>期限を設定する</key>
+	<string>设置截止日期</string>
+	<key>未着手</key>
+	<string>未开始</string>
+	<key>次のご褒美</key>
+	<string>下一个奖励</string>
+	<key>次の画面で「保護者」を選ぶと、保護者専用のパスワードをその場で設定できます。2回目からはそのパスワードで入ります。</key>
+	<string>在下一个画面选择「家长」，即可当场设置家长专用密码。第二次开始将使用该密码进入。</string>
+	<key>止める</key>
+	<string>停止</string>
+	<key>毎日%@やれば、あと約%d日で達成!</key>
+	<string>每天做 %@，大约 %d 天后就能达成！</string>
+	<key>洗濯物たたみ(10分)</key>
+	<string>叠衣服（10分钟）</string>
+	<key>玄関の靴そろえ</key>
+	<string>整理门口的鞋子</string>
+	<key>画像選択</key>
+	<string>选择照片</string>
+	<key>登録済みタスク</key>
+	<string>已登记的任务</string>
+	<key>目標がまだ設定されていません</key>
+	<string>尚未设置目标</string>
+	<key>目標・ご褒美設定</key>
+	<string>目标与奖励设置</string>
+	<key>目標設定日: %@</key>
+	<string>目标设定日期：%@</string>
+	<key>確認をお願いします</key>
+	<string>请确认一下</string>
+	<key>肩たたき(10分)</key>
+	<string>捶肩（10分钟）</string>
+	<key>言語</key>
+	<string>语言</string>
+	<key>設定</key>
+	<string>设置</string>
+	<key>設定してはじめる</key>
+	<string>设置并开始</string>
+	<key>証拠を残そう</key>
+	<string>留下证据</string>
+	<key>認証できませんでした</key>
+	<string>认证失败</string>
+	<key>貯まった金額が目標に届いたら、ご褒美がもらえる!</key>
+	<string>存款达到目标后，就能获得奖励！</string>
+	<key>追加</key>
+	<string>添加</string>
+	<key>送信する</key>
+	<string>发送</string>
+	<key>通貨</key>
+	<string>货币</string>
+	<key>進捗管理</key>
+	<string>进度管理</string>
+	<key>進行中</key>
+	<string>进行中</string>
+	<key>運動</key>
+	<string>运动</string>
+	<key>達成</key>
+	<string>已完成</string>
+	<key>達成したご褒美</key>
+	<string>已获得的奖励</string>
+	<key>達成したミッション</key>
+	<string>已完成的任务</string>
+	<key>達成額: %@ / %@</key>
+	<string>已达成金额：%@ / %@</string>
+	<key>金額</key>
+	<string>金额</string>
+	<key>金額の単位</key>
+	<string>计费方式</string>
+	<key>閉じる</key>
+	<string>关闭</string>
+	<key>🎉 登録が完了しました!</key>
+	<string>🎉 注册完成！</string>
+	<key>🎉 目標達成をチェックする</key>
+	<string>🎉 查看目标达成情况</string>
+</dict>
+</plist>

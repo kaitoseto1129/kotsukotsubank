@@ -1,0 +1,128 @@
+{
+  "source": "/Users/sanaeseto/kotsukotsubank/コツコツバンク/SettingsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "設定",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 160
+        }
+      },
+      {
+        "comment": "",
+        "key": "カメラが使えません",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 192
+        }
+      },
+      {
+        "comment": "",
+        "key": "アカウント",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "通貨",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 98
+        }
+      },
+      {
+        "comment": "",
+        "key": "言語",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 107
+        }
+      },
+      {
+        "comment": "",
+        "key": "お子様(最大5人)",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 115
+        }
+      },
+      {
+        "comment": "",
+        "key": "写真から選ぶ",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "撮影する",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "通貨",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 99
+        }
+      },
+      {
+        "comment": "",
+        "key": "言語",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 108
+        }
+      },
+      {
+        "comment": "",
+        "key": "お子様を追加",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 144
+        }
+      },
+      {
+        "comment": "",
+        "key": "ログアウト",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 155
+        }
+      },
+      {
+        "comment": "",
+        "key": "閉じる",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 165
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 193
+        }
+      },
+      {
+        "comment": "",
+        "key": "この端末ではカメラが使用できないため、「写真から選ぶ」から選んでください。",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 195
+        }
+      }
+    ]
+  },
+  "version": 1
+}

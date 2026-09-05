@@ -1,0 +1,64 @@
+{
+  "source": "/Users/sanaeseto/kotsukotsubank/コツコツバンク/GoalRewardSettingView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "リンクの横のボタンで、商品名・画像・値段の取得を試せます(サイトによっては取得できないことがあります)",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 111
+        }
+      },
+      {
+        "comment": "",
+        "key": "保存",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 106
+        }
+      },
+      {
+        "comment": "",
+        "key": "目標・ご褒美設定",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 40
+        }
+      },
+      {
+        "comment": "",
+        "key": "ご褒美の画像を選ぶ",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 62
+        }
+      },
+      {
+        "comment": "",
+        "key": "商品名",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "値段",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "amazon等商品リンク",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 77
+        }
+      }
+    ]
+  },
+  "version": 1
+}
