@@ -5,15 +5,18 @@
 
 import SwiftUI
 import SwiftData
+import Supabase
 
 struct LoginView: View {
     @Environment(SessionStore.self) private var session
+    @Environment(\.modelContext) private var modelContext
     @Query private var accounts: [FamilyAccount]
 
     @State private var email = ""
     @State private var password = ""
     @State private var errorMessage: String?
     @State private var showAbout = false
+    @State private var isLoggingIn = false
 
     private var biometricAccount: FamilyAccount? {
         guard let lastAccountID = BiometricAuth.lastAccountID else { return nil }
@@ -83,8 +86,8 @@ struct LoginView: View {
                 }
 
                 ParentPrimaryButton(
-                    title: "ログイン",
-                    isEnabled: !email.isEmpty && !password.isEmpty,
+                    title: isLoggingIn ? "ログイン中…" : "ログイン",
+                    isEnabled: !isLoggingIn && !email.isEmpty && !password.isEmpty,
                     action: logIn
                 )
 
@@ -115,9 +118,61 @@ struct LoginView: View {
     }
 
     private func logIn() {
+        errorMessage = nil
+        isLoggingIn = true
+
+        Task {
+            do {
+                // まず Supabase に問い合わせる。別の端末で登録したアカウントでも入れるようにするため。
+                let authSession = try await supabase.auth.signIn(email: email, password: password)
+                let accountID = authSession.user.id
+                await MainActor.run { finishRemoteLogIn(accountID: accountID) }
+            } catch {
+                // Supabase に繋がらない/認証NG のときは、この端末内のアカウントで試す(オフライン対応)。
+                print("Supabase sign-in failed: \(error)")
+                await MainActor.run { finishLocalLogIn(remoteFailed: true) }
+            }
+        }
+    }
+
+    /// Supabase 認証が通った後の処理。この端末にアカウント記録が無ければ作成する。
+    @MainActor
+    private func finishRemoteLogIn(accountID: UUID) {
+        let account: FamilyAccount
+        if let existing = accounts.first(where: {
+            $0.id == accountID || $0.email.caseInsensitiveCompare(email) == .orderedSame
+        }) {
+            // 別端末でパスワードを変更していても入れるよう、ローカルのハッシュを更新しておく。
+            existing.passwordHash = PasswordHashing.hash(password)
+            account = existing
+        } else {
+            let created = FamilyAccount(
+                id: accountID,
+                email: email,
+                passwordHash: PasswordHashing.hash(password)
+            )
+            modelContext.insert(created)
+            modelContext.insert(ChildProfile(accountID: created.id, name: "子ども1", avatarSystemImage: "face.smiling.fill", colorHex: "3478F6"))
+            modelContext.insert(ChildProfile(accountID: created.id, name: "子ども2", avatarSystemImage: "star.fill", colorHex: "FF6B00"))
+            account = created
+        }
+
+        errorMessage = nil
+        isLoggingIn = false
+        session.account = account
+        BiometricAuth.rememberAccount(account.id)
+    }
+
+    /// Supabase を使わずに、この端末に保存済みのアカウントでログインする。
+    /// - Parameter remoteFailed: Supabase への問い合わせが失敗して呼ばれた場合 true。
+    @MainActor
+    private func finishLocalLogIn(remoteFailed: Bool = false) {
+        isLoggingIn = false
         let hash = PasswordHashing.hash(password)
         guard let account = accounts.first(where: { $0.email.caseInsensitiveCompare(email) == .orderedSame }) else {
-            errorMessage = "アカウントが見つかりません"
+            errorMessage = remoteFailed
+                ? "メールアドレスかパスワードが正しくないか、通信環境が不安定です。ご確認ください。"
+                : "アカウントが見つかりません"
             return
         }
         guard account.passwordHash == hash else {

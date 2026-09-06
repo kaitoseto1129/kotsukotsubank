@@ -16,6 +16,7 @@ struct TaskManagementView: View {
     @State private var newTaskTitle = ""
     @State private var newTaskReward = ""
     @State private var newTaskCategory: TaskCategory = .chores
+    @State private var newTaskRewardUnit: RewardUnit = .perTask
     @State private var newTaskPresetIcon: String?
     @State private var missionPendingDeletion: Mission?
     @State private var editingMission: Mission?
@@ -59,10 +60,6 @@ struct TaskManagementView: View {
         session.account?.currencyCode ?? AppCurrency.jpy.rawValue
     }
 
-    private var currencySymbol: String {
-        (AppCurrency(rawValue: currencyCode) ?? .jpy).symbol
-    }
-
     private var appLocale: Locale {
         appLanguage.locale
     }
@@ -83,9 +80,11 @@ struct TaskManagementView: View {
                                 newTaskTitle = appLanguage.localizedString(forKey: preset.title)
                                 newTaskCategory = preset.category
                                 newTaskPresetIcon = preset.icon
+                                // 「(10分)」のような時間つきのタスクは分給、それ以外は固定額を初期値にする
+                                newTaskRewardUnit = preset.title.contains("分") ? .perHour : .perTask
                             } label: {
                                 Label {
-                                    Text("\(Text(LocalizedStringKey(preset.title)))(\(currencySymbol)00)")
+                                    Text(LocalizedStringKey(preset.title))
                                 } icon: {
                                     Image(systemName: preset.icon)
                                 }
@@ -117,9 +116,16 @@ struct TaskManagementView: View {
                     }
                     .pickerStyle(.segmented)
 
+                    Picker("金額の単位", selection: $newTaskRewardUnit) {
+                        ForEach(RewardUnit.allCases, id: \.self) { unit in
+                            Text(LocalizedStringKey(unit.label)).tag(unit)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+
                     ParentPrimaryButton(
                         title: "タスク追加",
-                        isEnabled: !newTaskTitle.isEmpty && Double(newTaskReward) != nil,
+                        isEnabled: !newTaskTitle.isEmpty && (Double(newTaskReward) ?? 0) > 0,
                         action: addTask
                     )
 
@@ -384,10 +390,11 @@ struct TaskManagementView: View {
     }
 
     private func addTask() {
-        guard let reward = Double(newTaskReward) else { return }
+        guard let reward = Double(newTaskReward), reward > 0 else { return }
         let mission = Mission(
             title: newTaskTitle,
             reward: reward,
+            rewardUnit: newTaskRewardUnit,
             category: newTaskCategory,
             presetIconName: newTaskPresetIcon,
             childID: child.id
@@ -405,6 +412,7 @@ struct TaskManagementView: View {
         newTaskTitle = ""
         newTaskReward = ""
         newTaskCategory = .chores
+        newTaskRewardUnit = .perTask
         newTaskPresetIcon = nil
     }
 

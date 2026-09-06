@@ -18,7 +18,7 @@ struct EditTaskView: View {
     init(mission: Mission) {
         self.mission = mission
         _title = State(initialValue: mission.title)
-        _reward = State(initialValue: String(Int(mission.reward)))
+        _reward = State(initialValue: wholeNumberString(mission.reward))
         _rewardUnit = State(initialValue: mission.rewardUnit)
         _hasDueDate = State(initialValue: mission.dueDate != nil)
         _dueDate = State(initialValue: mission.dueDate ?? .now)
@@ -57,7 +57,7 @@ struct EditTaskView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("保存") { save() }
-                        .disabled(title.isEmpty || Double(reward) == nil)
+                        .disabled(title.isEmpty || (Double(reward) ?? 0) <= 0)
                 }
             }
             #endif
@@ -67,7 +67,7 @@ struct EditTaskView: View {
     }
 
     private func save() {
-        guard let rewardValue = Double(reward) else { return }
+        guard let rewardValue = Double(reward), rewardValue > 0 else { return }
         mission.title = title
         mission.reward = rewardValue
         mission.rewardUnit = rewardUnit

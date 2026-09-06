@@ -20,7 +20,9 @@ struct ProgressManagementView: View {
     }
 
     private var goal: Goal? {
-        allGoals.filter { $0.childID == child.id }.sorted { $0.createdAt > $1.createdAt }.first
+        let mine = allGoals.filter { $0.childID == child.id }.sorted { $0.createdAt > $1.createdAt }
+        // 進行中(未受け取り)の目標を優先し、無ければ直近のものを表示する
+        return mine.first { $0.redeemedAt == nil } ?? mine.first
     }
 
     private var redeemedGoals: [Goal] {

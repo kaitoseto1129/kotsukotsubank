@@ -65,7 +65,9 @@ struct ChildHomeView: View {
     @Query(sort: \Mission.createdAt) private var allMissions: [Mission]
 
     private var currentGoal: Goal? {
-        allGoals.first { $0.childID == child.id }
+        // まだ受け取っていない目標を優先。無ければ(過去の受け取り済みも含めて)直近のもの。
+        allGoals.first { $0.childID == child.id && $0.redeemedAt == nil }
+            ?? allGoals.first { $0.childID == child.id }
     }
 
     private var missions: [Mission] {
@@ -95,7 +97,7 @@ struct ChildHomeView: View {
     }
 
     private var isGoalAchieved: Bool {
-        guard let goal = currentGoal else { return false }
+        guard let goal = currentGoal, goal.price > 0 else { return false }
         return earnedAmount >= goal.price
     }
 
@@ -107,7 +109,7 @@ struct ChildHomeView: View {
 
         let calendar = Calendar.current
         let recentTotal = approvedMissionsForGoal
-            .filter { calendar.dateComponents([.day], from: $0.completedAt ?? $0.createdAt, to: .now).day.map { $0 <= 7 } ?? false }
+            .filter { (0...7).contains(calendar.dateComponents([.day], from: $0.completedAt ?? $0.createdAt, to: .now).day ?? -1) }
             .reduce(0) { $0 + $1.payoutAmount }
 
         guard recentTotal > 0 else { return nil }
@@ -223,12 +225,12 @@ struct ChildHomeView: View {
         }
     }
 
-    /// LV.10・15・20・25…(5の倍数、10以上)に到達するたびに、お祝い画面と保護者の役割交代ゲームを発生させる
+    /// LV.5・10・15・20…(5の倍数)に到達するたびに、お祝い画面と保護者の役割交代ゲームを発生させる。
+    /// 同じ節目の期間中(例: LV.5の21〜27日目)に何度も発生しないよう、記録済みの到達日数で判定する。
     private func checkLevel5Achievement() {
-        guard level.triggersSurprise,
-              !child.parentTurnPending,
-              streak != child.lastLevel5StreakTrigger
-        else { return }
+        guard level.triggersSurprise, !child.parentTurnPending else { return }
+        let milestoneStreak = GameLevel.requiredStreak(forLevel: level.value)
+        guard child.lastLevel5StreakTrigger < milestoneStreak else { return }
         child.parentTurnPending = true
         child.lastLevel5StreakTrigger = streak
         showLevel5Celebration = true

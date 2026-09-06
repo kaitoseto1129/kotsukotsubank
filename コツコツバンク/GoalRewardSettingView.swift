@@ -104,7 +104,7 @@ struct GoalRewardSettingView: View {
 
                 ParentPrimaryButton(
                     title: "保存",
-                    isEnabled: !title.isEmpty && Double(priceText) != nil,
+                    isEnabled: !title.isEmpty && (Double(priceText) ?? 0) > 0,
                     action: save
                 )
 
@@ -136,8 +136,8 @@ struct GoalRewardSettingView: View {
                 if let fetchedTitle = metadata.title, !fetchedTitle.isEmpty {
                     title = fetchedTitle
                 }
-                if let price = metadata.price {
-                    priceText = String(Int(price))
+                if let price = metadata.price, price > 0 {
+                    priceText = wholeNumberString(price)
                 }
                 if let imageData = metadata.imageData {
                     self.imageData = imageData
@@ -155,13 +155,13 @@ struct GoalRewardSettingView: View {
     private func loadExistingGoal() {
         guard let goal = activeGoal else { return }
         title = goal.title
-        priceText = String(Int(goal.price))
+        priceText = wholeNumberString(goal.price)
         productURL = goal.productURL ?? ""
         imageData = goal.imageData
     }
 
     private func save() {
-        guard let price = Double(priceText) else { return }
+        guard let price = Double(priceText), price > 0 else { return }
 
         if let goal = activeGoal {
             goal.title = title
