@@ -149,6 +149,7 @@ struct SettingsView: View {
 
                 Section {
                     Button(role: .destructive) {
+                        SupabaseSync.shared.stop()
                         session.logOut()
                         dismiss()
                     } label: {
@@ -198,16 +199,20 @@ struct SettingsView: View {
         }
     }
 
-    /// お子様を削除する際、そのお子様に紐づく目標・タスクも一緒に削除して孤立データを残さない
+    /// お子様を削除する際、そのお子様に紐づく目標・タスクも一緒に削除して孤立データを残さない。
+    /// 端末間同期のため、削除は「墓標」を残してから hard delete する。
     private func deleteChildren(at offsets: IndexSet) {
         for index in offsets {
             let child = children[index]
             for goal in allGoals where goal.childID == child.id {
+                modelContext.insert(SyncTombstone(rowID: goal.id, table: "goals", accountID: goal.accountID))
                 modelContext.delete(goal)
             }
             for mission in allMissions where mission.childID == child.id {
+                modelContext.insert(SyncTombstone(rowID: mission.id, table: "missions", accountID: mission.accountID))
                 modelContext.delete(mission)
             }
+            modelContext.insert(SyncTombstone(rowID: child.id, table: "child_profiles", accountID: child.accountID))
             modelContext.delete(child)
         }
     }

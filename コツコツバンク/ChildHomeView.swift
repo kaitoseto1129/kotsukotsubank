@@ -530,6 +530,7 @@ private struct MissionCard: View {
     /// 承認済みのタスクを、子どもがもう一度取り組めるように新しいミッションとして複製する
     private func repeatMission() {
         let newMission = Mission(
+            accountID: mission.accountID,
             title: mission.title,
             reward: mission.reward,
             rewardUnit: mission.rewardUnit,

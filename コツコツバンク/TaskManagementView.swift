@@ -333,6 +333,7 @@ struct TaskManagementView: View {
         ) {
             Button("削除", role: .destructive) {
                 if let mission = missionPendingDeletion {
+                    modelContext.insert(SyncTombstone(rowID: mission.id, table: "missions", accountID: mission.accountID))
                     modelContext.delete(mission)
                 }
                 missionPendingDeletion = nil
@@ -392,6 +393,7 @@ struct TaskManagementView: View {
     private func addTask() {
         guard let reward = Double(newTaskReward), reward > 0 else { return }
         let mission = Mission(
+            accountID: child.accountID,
             title: newTaskTitle,
             reward: reward,
             rewardUnit: newTaskRewardUnit,

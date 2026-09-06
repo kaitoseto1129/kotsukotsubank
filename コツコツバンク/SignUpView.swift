@@ -116,6 +116,7 @@ struct SignUpView: View {
                 completedAccount = nil
                 session.account = account
                 BiometricAuth.rememberAccount(account.id)
+                SupabaseSync.shared.start(accountID: account.id, context: modelContext)
             }
         }
     }

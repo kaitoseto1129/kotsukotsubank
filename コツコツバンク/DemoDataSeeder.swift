@@ -13,12 +13,12 @@ enum DemoDataSeeder {
         let calendar = Calendar.current
         var missions: [Mission] = []
 
-        missions.append(Mission(title: "お皿洗い", reward: 50, rewardUnit: .perTask, status: .pending, childID: child.id))
+        missions.append(Mission(accountID: child.accountID, title: "お皿洗い", reward: 50, rewardUnit: .perTask, status: .pending, childID: child.id))
 
         let dueSoon = calendar.date(byAdding: .day, value: 3, to: .now)
-        missions.append(Mission(title: "宿題をおわらせる", reward: 100, rewardUnit: .perTask, status: .pending, dueDate: dueSoon, childID: child.id))
+        missions.append(Mission(accountID: child.accountID, title: "宿題をおわらせる", reward: 100, rewardUnit: .perTask, status: .pending, dueDate: dueSoon, childID: child.id))
 
-        let submitted = Mission(title: "お部屋の片付け", reward: 300, rewardUnit: .perHour, status: .submitted, childID: child.id)
+        let submitted = Mission(accountID: child.accountID, title: "お部屋の片付け", reward: 300, rewardUnit: .perHour, status: .submitted, childID: child.id)
         submitted.completedAt = .now
         submitted.timerAccumulatedSeconds = 1800
         submitted.comment = "机の上と床をきれいにしたよ!"
@@ -26,7 +26,7 @@ enum DemoDataSeeder {
 
         for offset in [1, 2, 4, 6] {
             let day = calendar.date(byAdding: .day, value: -offset, to: .now) ?? .now
-            let approved = Mission(title: "お手伝い(サンプル)", reward: 80, rewardUnit: .perTask, status: .approved, createdAt: day, childID: child.id)
+            let approved = Mission(accountID: child.accountID, title: "お手伝い(サンプル)", reward: 80, rewardUnit: .perTask, status: .approved, createdAt: day, childID: child.id)
             approved.completedAt = day
             missions.append(approved)
         }
@@ -39,7 +39,7 @@ enum DemoDataSeeder {
 
     static func seedGoalIfNeeded(for child: ChildProfile, context: ModelContext, existingGoals: [Goal]) {
         guard !existingGoals.contains(where: { $0.childID == child.id && $0.redeemedAt == nil }) else { return }
-        let goal = Goal(title: "サンプル: ニンテンドースイッチ", price: 30000, childID: child.id)
+        let goal = Goal(accountID: child.accountID, title: "サンプル: ニンテンドースイッチ", price: 30000, childID: child.id)
         context.insert(goal)
     }
 
@@ -51,7 +51,7 @@ enum DemoDataSeeder {
         var missions: [Mission] = []
         for offset in 0..<daysNeeded {
             let day = calendar.date(byAdding: .day, value: -offset, to: .now) ?? .now
-            let mission = Mission(title: "お手伝い(連続サンプル)", reward: 50, rewardUnit: .perTask, status: .approved, createdAt: day, childID: child.id)
+            let mission = Mission(accountID: child.accountID, title: "お手伝い(連続サンプル)", reward: 50, rewardUnit: .perTask, status: .approved, createdAt: day, childID: child.id)
             mission.completedAt = day
             missions.append(mission)
         }

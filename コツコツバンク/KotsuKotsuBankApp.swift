@@ -16,6 +16,7 @@ struct KotsuKotsuBankApp: App {
             ChildProfile.self,
             Goal.self,
             Mission.self,
+            SyncTombstone.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -27,6 +28,7 @@ struct KotsuKotsuBankApp: App {
     }()
 
     @State private var session = SessionStore()
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
@@ -34,5 +36,10 @@ struct KotsuKotsuBankApp: App {
                 .environment(session)
         }
         .modelContainer(sharedModelContainer)
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                Task { await SupabaseSync.shared.syncNow() }
+            }
+        }
     }
 }

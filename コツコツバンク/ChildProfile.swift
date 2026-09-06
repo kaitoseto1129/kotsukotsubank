@@ -25,6 +25,8 @@ final class ChildProfile {
     var backgroundColorHex: String = "DCE9FF"
     /// 今日のミッションが空の時に表示する、保護者が選んだイラスト(SF Symbol名)
     var emptyStateIconName: String = "sparkles"
+    /// 端末間同期用。最後に内容が変わった時刻(Supabaseとの新旧比較に使う)
+    var updatedAt: Date = Date.now
 
     init(
         id: UUID = UUID(),

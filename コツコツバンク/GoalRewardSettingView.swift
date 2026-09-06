@@ -169,7 +169,7 @@ struct GoalRewardSettingView: View {
             goal.productURL = productURL.isEmpty ? nil : productURL
             goal.imageData = imageData
         } else {
-            let goal = Goal(title: title, price: price, productURL: productURL.isEmpty ? nil : productURL, imageData: imageData, childID: child.id)
+            let goal = Goal(accountID: child.accountID, title: title, price: price, productURL: productURL.isEmpty ? nil : productURL, imageData: imageData, childID: child.id)
             modelContext.insert(goal)
         }
         dismiss()

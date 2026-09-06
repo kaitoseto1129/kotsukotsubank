@@ -136,6 +136,7 @@ struct LoginView: View {
     }
 
     /// Supabase 認証が通った後の処理。この端末にアカウント記録が無ければ作成する。
+    /// 子ども・目標・タスクは Supabase から同期で降ってくるので、ここでは作らない。
     @MainActor
     private func finishRemoteLogIn(accountID: UUID) {
         let account: FamilyAccount
@@ -144,6 +145,8 @@ struct LoginView: View {
         }) {
             // 別端末でパスワードを変更していても入れるよう、ローカルのハッシュを更新しておく。
             existing.passwordHash = PasswordHashing.hash(password)
+            // 旧アプリで作ったアカウントは id が Supabase の uid と違うので揃える。
+            SupabaseSync.normalizeLocalIdentities(account: existing, supabaseUserID: accountID, context: modelContext)
             account = existing
         } else {
             let created = FamilyAccount(
@@ -152,8 +155,6 @@ struct LoginView: View {
                 passwordHash: PasswordHashing.hash(password)
             )
             modelContext.insert(created)
-            modelContext.insert(ChildProfile(accountID: created.id, name: "子ども1", avatarSystemImage: "face.smiling.fill", colorHex: "3478F6"))
-            modelContext.insert(ChildProfile(accountID: created.id, name: "子ども2", avatarSystemImage: "star.fill", colorHex: "FF6B00"))
             account = created
         }
 
@@ -161,6 +162,7 @@ struct LoginView: View {
         isLoggingIn = false
         session.account = account
         BiometricAuth.rememberAccount(account.id)
+        SupabaseSync.shared.start(accountID: account.id, context: modelContext)
     }
 
     /// Supabase を使わずに、この端末に保存済みのアカウントでログインする。
@@ -182,6 +184,7 @@ struct LoginView: View {
         errorMessage = nil
         session.account = account
         BiometricAuth.rememberAccount(account.id)
+        SupabaseSync.shared.start(accountID: account.id, context: modelContext)
     }
 
     private func logInWithBiometrics(account: FamilyAccount) {
@@ -189,6 +192,7 @@ struct LoginView: View {
             if success {
                 errorMessage = nil
                 session.account = account
+                SupabaseSync.shared.start(accountID: account.id, context: modelContext)
             } else {
                 errorMessage = "認証できませんでした"
             }

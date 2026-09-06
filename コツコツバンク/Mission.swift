@@ -59,6 +59,12 @@ enum TaskCategory: String, Codable, CaseIterable {
 
 @Model
 final class Mission {
+    /// 端末間同期用の固有ID
+    var id: UUID = UUID()
+    /// 端末間同期用。このタスクが属するアカウント(FamilyAccount.id / Supabaseのユーザーid)
+    var accountID: UUID = UUID()
+    /// 端末間同期用。最後に内容が変わった時刻
+    var updatedAt: Date = Date.now
     var title: String
     var reward: Double
     var rewardUnitRaw: String = RewardUnit.perTask.rawValue
@@ -102,6 +108,8 @@ final class Mission {
     }
 
     init(
+        id: UUID = UUID(),
+        accountID: UUID = UUID(),
         title: String,
         reward: Double,
         rewardUnit: RewardUnit = .perTask,
@@ -112,6 +120,8 @@ final class Mission {
         presetIconName: String? = nil,
         childID: UUID
     ) {
+        self.id = id
+        self.accountID = accountID
         self.title = title
         self.reward = reward
         self.rewardUnitRaw = rewardUnit.rawValue
