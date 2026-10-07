@@ -22,7 +22,7 @@ struct ModeSelectionView: View {
                 Text("🏦")
                     .font(.system(size: 44))
                 Text("だれがつかう?")
-                    .font(.system(.title2, design: .rounded).bold())
+                    .font(.system(.title2).bold())
                 Text("アイコンをえらんでね")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -82,13 +82,12 @@ private struct ModeIcon: View {
                             )
                         )
                         .frame(width: 74, height: 74)
-                        .shadow(color: Color(hex: colorHex).opacity(0.4), radius: 10, x: 0, y: 6)
                     Image(systemName: systemImage)
                         .font(.title)
                         .foregroundStyle(.white)
                 }
                 Text(LocalizedStringKey(label))
-                    .font(.system(.subheadline, design: .rounded).bold())
+                    .font(.system(.subheadline).bold())
                     .foregroundStyle(.primary)
             }
         }

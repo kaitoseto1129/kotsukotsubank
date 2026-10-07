@@ -6,18 +6,25 @@
 import SwiftUI
 
 enum ParentTheme {
-    static let accent = Color(red: 0.90, green: 0.06, blue: 0.13)
-    static let accentSoft = Color(red: 1.0, green: 0.55, blue: 0.1)
-    static let card = Color.white
+    /// メインの青(ヘッダー帯・アイコン・リンク)
+    static let accent = Color(red: 0.12, green: 0.31, blue: 0.85)
+    /// 差し色の黄色(メインのボタン・目立たせたい所)
+    static let accentSoft = Color(red: 1.0, green: 0.72, blue: 0.01)
+    /// 黄色いボタンの上の文字色(濃い紺)
+    static let ctaText = Color(red: 0.05, green: 0.11, blue: 0.24)
+    /// カードや入力欄に使う、ごく薄い青
+    static let card = Color(red: 0.93, green: 0.95, blue: 0.99)
 
+    /// 背景は白一色(グラデーションはやめた)
     static let backgroundGradient = LinearGradient(
-        colors: [Color(red: 1.0, green: 0.95, blue: 0.90), Color(red: 0.96, green: 0.97, blue: 1.0)],
-        startPoint: .topLeading,
-        endPoint: .bottomTrailing
+        colors: [Color.white, Color.white],
+        startPoint: .top,
+        endPoint: .bottom
     )
 
+    /// 青一色(既存の呼び出しを壊さないため、型はLinearGradientのまま)
     static let ctaGradient = LinearGradient(
-        colors: [accent, accentSoft],
+        colors: [accent, accent],
         startPoint: .leading,
         endPoint: .trailing
     )
@@ -35,8 +42,7 @@ struct CardBackground: ViewModifier {
         content
             .padding(padding)
             .background(ParentTheme.card)
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .shadow(color: .black.opacity(0.06), radius: 10, x: 0, y: 4)
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 }
 
@@ -109,11 +115,11 @@ struct ParentTextField: View {
             }
         }
         .padding(14)
-        .background(Color(white: 0.96))
+        .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(isFocused ? ParentTheme.accent.opacity(0.6) : Color.clear, lineWidth: 1.5)
+                .stroke(isFocused ? ParentTheme.accent : Color(red: 0.82, green: 0.86, blue: 0.95), lineWidth: isFocused ? 2 : 1)
         )
         .animation(.easeOut(duration: 0.15), value: isFocused)
     }
@@ -128,12 +134,11 @@ struct ParentPrimaryButton: View {
         Button(action: action) {
             Text(title)
                 .font(.headline)
-                .foregroundStyle(.white)
+                .foregroundStyle(isEnabled ? ParentTheme.ctaText : Color.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 15)
-                .background(isEnabled ? AnyShapeStyle(ParentTheme.ctaGradient) : AnyShapeStyle(Color.gray.opacity(0.35)))
+                .background(isEnabled ? AnyShapeStyle(ParentTheme.accentSoft) : AnyShapeStyle(Color.gray.opacity(0.35)))
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .shadow(color: isEnabled ? ParentTheme.accent.opacity(0.3) : .clear, radius: 10, x: 0, y: 5)
         }
         .disabled(!isEnabled)
         .buttonStyle(PressableButtonStyle())
@@ -170,7 +175,6 @@ struct AvatarView: View {
                 Circle()
                     .fill(Color(hex: colorHex))
                     .frame(width: diameter, height: diameter)
-                    .shadow(color: Color(hex: colorHex).opacity(0.4), radius: 8, x: 0, y: 4)
                 Image(systemName: systemImage)
                     .font(.system(size: diameter * 0.4))
                     .foregroundStyle(.white)
@@ -189,17 +193,17 @@ struct IconMenuRow: View {
     var body: some View {
         HStack(spacing: 14) {
             ZStack {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(iconColor.opacity(0.15))
-                    .frame(width: 44, height: 44)
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(ParentTheme.accent)
+                    .frame(width: 40, height: 40)
                 Image(systemName: icon)
-                    .font(.system(size: 19, weight: .semibold))
-                    .foregroundStyle(iconColor)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(.white)
             }
 
             Text(title)
-                .font(.system(.headline, design: .rounded))
-                .foregroundStyle(.primary)
+                .font(.headline)
+                .foregroundStyle(ParentTheme.ctaText)
 
             Spacer()
 
@@ -219,8 +223,7 @@ struct IconMenuRow: View {
         }
         .padding(14)
         .background(ParentTheme.card)
-        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 3)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 }
 
@@ -231,30 +234,38 @@ struct ModeSwitchControl: View {
     var onSwitchToChild: () -> Void
 
     var body: some View {
-        HStack(spacing: 2) {
-            option(emoji: "🧑", selected: isGuardian, action: onSwitchToGuardian)
-            option(emoji: "🧒", selected: !isGuardian, action: onSwitchToChild)
+        HStack(spacing: 4) {
+            option(icon: "person.fill", label: "保護者", selected: isGuardian, action: onSwitchToGuardian)
+            option(icon: "face.smiling.fill", label: "こども", selected: !isGuardian, action: onSwitchToChild)
         }
-        .padding(3)
+        .padding(4)
         .background(.ultraThinMaterial, in: Capsule())
         .animation(.easeInOut(duration: 0.2), value: isGuardian)
     }
 
     @ViewBuilder
-    private func option(emoji: String, selected: Bool, action: @escaping () -> Void) -> some View {
+    private func option(icon: String, label: LocalizedStringKey, selected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Text(emoji)
-                .font(.system(size: 16))
-                .frame(width: 36, height: 30)
-                .background {
-                    if selected {
-                        Capsule().fill(ParentTheme.ctaGradient)
-                    } else {
-                        Capsule().fill(Color.white.opacity(0.001))
-                    }
+            HStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.system(size: 14, weight: .bold))
+                Text(label)
+                    .font(.system(size: 13, weight: .bold))
+                    .lineLimit(1)
+                    .fixedSize()
+            }
+            .foregroundStyle(selected ? .white : .primary)
+            .padding(.horizontal, 9)
+            .frame(height: 34)
+            .background {
+                if selected {
+                    Capsule().fill(ParentTheme.ctaGradient)
+                } else {
+                    Capsule().fill(Color.white.opacity(0.001))
                 }
-                .opacity(selected ? 1 : 0.45)
-                .contentShape(Rectangle())
+            }
+            .opacity(selected ? 1 : 0.55)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }

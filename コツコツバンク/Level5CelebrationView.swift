@@ -33,11 +33,11 @@ struct Level5CelebrationView: View {
                 .scaleEffect(didAppear ? 1 : 0.5)
 
             Text("\(level.title) 達成!")
-                .font(.system(size: 40, weight: .heavy, design: .rounded))
+                .font(.system(size: 40, weight: .heavy))
                 .foregroundStyle(Palette.textPrimary)
 
             Text("\(streakDays)日連続でお手伝いできたね!")
-                .font(.system(.title3, design: .rounded).bold())
+                .font(.system(.title3).bold())
                 .foregroundStyle(Palette.textSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 24)
@@ -74,7 +74,7 @@ struct Level5CelebrationView: View {
                 ParentTaskChoiceView(child: child, onFinished: onFinished)
             } label: {
                 Text("やった!サプライズ")
-                    .font(.system(.headline, design: .rounded))
+                    .font(.system(.headline))
                     .foregroundStyle(.white)
                     .frame(width: 220)
                     .padding(.vertical, 15)

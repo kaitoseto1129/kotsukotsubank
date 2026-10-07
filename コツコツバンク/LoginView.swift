@@ -36,7 +36,6 @@ struct LoginView: View {
                             .frame(width: 40, height: 40)
                             .background(ParentTheme.card)
                             .clipShape(Circle())
-                            .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 2)
                     }
                     Spacer()
                 }
@@ -45,7 +44,7 @@ struct LoginView: View {
                     Text("🏦")
                         .font(.system(size: 48))
                     Text("おかえりなさい")
-                        .font(.system(.title2, design: .rounded).bold())
+                        .font(.system(.title2).bold())
                     Button("コツコツバンクとは?") { showAbout = true }
                         .font(.footnote.bold())
                         .foregroundStyle(ParentTheme.accent)
@@ -57,13 +56,12 @@ struct LoginView: View {
                         logInWithBiometrics(account: biometricAccount)
                     } label: {
                         Label("Face IDでログイン", systemImage: "faceid")
-                            .font(.system(.headline, design: .rounded))
+                            .font(.system(.headline))
                             .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
                             .background(ParentTheme.ctaGradient)
                             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                            .shadow(color: ParentTheme.accent.opacity(0.3), radius: 10, x: 0, y: 5)
                     }
 
                     HStack {

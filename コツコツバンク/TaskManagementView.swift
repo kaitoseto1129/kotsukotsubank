@@ -15,13 +15,10 @@ struct TaskManagementView: View {
 
     @State private var newTaskTitle = ""
     @State private var newTaskReward = ""
-    @State private var newTaskCategory: TaskCategory = .chores
-    @State private var newTaskRewardUnit: RewardUnit = .perTask
     @State private var newTaskPresetIcon: String?
     @State private var missionPendingDeletion: Mission?
     @State private var editingMission: Mission?
     @State private var viewingMission: Mission?
-    @State private var selectedCategoryFilter: TaskCategory?
     @State private var justAddedTaskTitle: String?
     @State private var showCompletedHistory = false
 
@@ -36,12 +33,6 @@ struct TaskManagementView: View {
     /// まだ完了していない(承認済みでない)、子供に割り当てたタスクの一覧
     private var activeMissions: [Mission] {
         missionsForChild.filter { $0.status != .approved && $0.status != .submitted }
-    }
-
-    /// カテゴリで絞り込んだ、登録済みタスクの一覧(「すべて」選択時は絞り込まない)
-    private var filteredActiveMissions: [Mission] {
-        guard let selectedCategoryFilter else { return activeMissions }
-        return activeMissions.filter { $0.category == selectedCategoryFilter }
     }
 
     private var approvedMissions: [Mission] {
@@ -78,10 +69,7 @@ struct TaskManagementView: View {
                         ForEach(TaskPreset.samples) { preset in
                             Button {
                                 newTaskTitle = appLanguage.localizedString(forKey: preset.title)
-                                newTaskCategory = preset.category
                                 newTaskPresetIcon = preset.icon
-                                // 「(10分)」のような時間つきのタスクは分給、それ以外は固定額を初期値にする
-                                newTaskRewardUnit = preset.title.contains("分") ? .perHour : .perTask
                             } label: {
                                 Label {
                                     Text(LocalizedStringKey(preset.title))
@@ -108,20 +96,6 @@ struct TaskManagementView: View {
 
                     ParentTextField(title: "タスク名", text: $newTaskTitle, icon: "pencil")
                     ParentTextField(title: "タスク価格", text: $newTaskReward, isNumeric: true, icon: AppCurrency(rawValue: currencyCode)?.systemImage ?? "yensign.circle.fill")
-
-                    Picker("カテゴリ", selection: $newTaskCategory) {
-                        ForEach(TaskCategory.allCases, id: \.self) { category in
-                            Label(LocalizedStringKey(category.label), systemImage: category.icon).tag(category)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-
-                    Picker("金額の単位", selection: $newTaskRewardUnit) {
-                        ForEach(RewardUnit.allCases, id: \.self) { unit in
-                            Text(LocalizedStringKey(unit.label)).tag(unit)
-                        }
-                    }
-                    .pickerStyle(.segmented)
 
                     ParentPrimaryButton(
                         title: "タスク追加",
@@ -163,24 +137,6 @@ struct TaskManagementView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
                 Button {
-                    seedDemoData()
-                } label: {
-                    Label("サンプルデータを追加(動作確認用)", systemImage: "wand.and.stars")
-                        .font(.caption.bold())
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(.secondary)
-
-                Button {
-                    DemoDataSeeder.seedLevel5Streak(for: child, context: modelContext)
-                } label: {
-                    Label("サプライズ演出を試す(動作確認用)", systemImage: "crown.fill")
-                        .font(.caption.bold())
-                }
-                .buttonStyle(.plain)
-                .foregroundStyle(.secondary)
-
-                Button {
                     SoundEffects.playFanfareSound()
                 } label: {
                     Label("ラッパの音を試聴(動作確認用)", systemImage: "speaker.wave.3.fill")
@@ -192,24 +148,13 @@ struct TaskManagementView: View {
                 if !activeMissions.isEmpty {
                     SectionHeader(icon: "list.bullet.rectangle.fill", title: "登録済みタスク", color: .indigo)
 
-                    Picker("カテゴリで絞り込み", selection: $selectedCategoryFilter) {
-                        Text("すべて").tag(TaskCategory?.none)
-                        ForEach(TaskCategory.allCases, id: \.self) { category in
-                            Text(LocalizedStringKey(category.label)).tag(TaskCategory?.some(category))
-                        }
-                    }
-                    .pickerStyle(.segmented)
-
                     VStack(spacing: 0) {
-                        ForEach(filteredActiveMissions) { mission in
+                        ForEach(activeMissions) { mission in
                             Button {
                                 editingMission = mission
                             } label: {
                                 HStack {
                                     statusDot(for: mission)
-                                    Image(systemName: mission.category.icon)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
                                     Text(LocalizedStringKey(mission.title))
                                         .font(.subheadline.bold())
                                         .foregroundStyle(.primary)
@@ -235,16 +180,9 @@ struct TaskManagementView: View {
                             .buttonStyle(.plain)
                             .padding(.vertical, 12)
 
-                            if mission.id != filteredActiveMissions.last?.id {
+                            if mission.id != activeMissions.last?.id {
                                 Divider()
                             }
-                        }
-
-                        if filteredActiveMissions.isEmpty {
-                            Text("このカテゴリのタスクはありません")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .padding(.vertical, 12)
                         }
                     }
                     .padding(.horizontal, 14)
@@ -369,6 +307,14 @@ struct TaskManagementView: View {
                 Text(mission.status == .approved ? moneyString(mission.payoutAmount, currencyCode: currencyCode) : "却下")
                     .font(.caption.bold())
                     .foregroundStyle(mission.status == .approved ? ParentTheme.accentSoft : ParentTheme.accent)
+                Button {
+                    missionPendingDeletion = mission
+                } label: {
+                    Image(systemName: "trash")
+                        .foregroundStyle(ParentTheme.accent)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("「\(mission.title)」を削除")
                 Image(systemName: "chevron.right")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
@@ -394,12 +340,11 @@ struct TaskManagementView: View {
         let mission = Mission(
             title: newTaskTitle,
             reward: reward,
-            rewardUnit: newTaskRewardUnit,
-            category: newTaskCategory,
             presetIconName: newTaskPresetIcon,
             childID: child.id
         )
         modelContext.insert(mission)
+        AnalyticsService.log(.missionCreated)
 
         let addedTitle = newTaskTitle
         justAddedTaskTitle = addedTitle
@@ -411,13 +356,7 @@ struct TaskManagementView: View {
 
         newTaskTitle = ""
         newTaskReward = ""
-        newTaskCategory = .chores
-        newTaskRewardUnit = .perTask
         newTaskPresetIcon = nil
-    }
-
-    private func seedDemoData() {
-        DemoDataSeeder.seedMissions(for: child, context: modelContext)
     }
 
     /// 承認・却下は保護者自身の操作なので、その場で保護者に通知を出す必要はない
@@ -428,6 +367,7 @@ struct TaskManagementView: View {
             mission.completedAt = .now
         }
         mission.parentFeedback = message.isEmpty ? nil : message
+        AnalyticsService.log(.missionApproved)
     }
 
     private func reject(_ mission: Mission, feedback: String) {
@@ -450,7 +390,7 @@ struct SectionHeader: View {
             Image(systemName: icon)
                 .foregroundStyle(color)
             Text(title)
-                .font(.system(.headline, design: .rounded))
+                .font(.system(.headline))
         }
     }
 }
@@ -467,7 +407,7 @@ private struct ApprovalCard: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text(LocalizedStringKey(mission.title))
-                    .font(.system(.headline, design: .rounded))
+                    .font(.system(.headline))
                 Spacer()
                 Text(moneyString(mission.payoutAmount, currencyCode: session.account?.currencyCode ?? AppCurrency.jpy.rawValue))
                     .font(.caption.bold())
@@ -485,6 +425,16 @@ private struct ApprovalCard: View {
                     .frame(maxWidth: .infinity)
                     .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .clipped()
+            } else if let presetIconName = mission.presetIconName {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(ParentTheme.accent.opacity(0.08))
+                    .frame(height: 160)
+                    .frame(maxWidth: .infinity)
+                    .overlay {
+                        Image(systemName: presetIconName)
+                            .font(.system(size: 56))
+                            .foregroundStyle(ParentTheme.accent)
+                    }
             } else {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(Color(white: 0.93))
@@ -541,7 +491,7 @@ private struct MissionDetailSheet: View {
                     }
 
                     Text(LocalizedStringKey(mission.title))
-                        .font(.system(.title3, design: .rounded).bold())
+                        .font(.system(.title3).bold())
 
                     if let data = mission.photoData, let image = PlatformImage(data: data) {
                         image.resizableImage
@@ -550,6 +500,16 @@ private struct MissionDetailSheet: View {
                             .frame(maxWidth: .infinity)
                             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                             .clipped()
+                    } else if let presetIconName = mission.presetIconName {
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .fill(ParentTheme.accent.opacity(0.08))
+                            .frame(height: 220)
+                            .frame(maxWidth: .infinity)
+                            .overlay {
+                                Image(systemName: presetIconName)
+                                    .font(.system(size: 64))
+                                    .foregroundStyle(ParentTheme.accent)
+                            }
                     }
 
                     if let comment = mission.comment, !comment.isEmpty {
@@ -600,23 +560,22 @@ struct TaskPreset: Identifiable {
     let title: String
     let icon: String
     let reward: Double
-    let category: TaskCategory
     var id: String { title }
 
     static let samples: [TaskPreset] = [
-        TaskPreset(title: "お皿洗い(10分)", icon: "fork.knife", reward: 0.5, category: .chores),
-        TaskPreset(title: "お風呂掃除", icon: "shower.fill", reward: 1, category: .chores),
-        TaskPreset(title: "肩たたき(10分)", icon: "hand.raised.fill", reward: 1, category: .chores),
-        TaskPreset(title: "ベッドメイキング", icon: "bed.double.fill", reward: 1, category: .chores),
-        TaskPreset(title: "洗濯物たたみ(10分)", icon: "tshirt.fill", reward: 1, category: .chores),
-        TaskPreset(title: "ゴミ出し", icon: "trash.fill", reward: 0.5, category: .chores),
-        TaskPreset(title: "玄関の靴そろえ", icon: "shoe.2.fill", reward: 0.5, category: .chores),
-        TaskPreset(title: "掃除機がけ", icon: "wind", reward: 1.5, category: .chores),
-        TaskPreset(title: "宿題を当日1時間以内に終わらせる", icon: "pencil.and.list.clipboard", reward: 2, category: .study),
-        TaskPreset(title: "テストで80点以上", icon: "star.leadinghalf.filled", reward: 1, category: .study),
-        TaskPreset(title: "テストで100点", icon: "star.fill", reward: 3, category: .study),
-        TaskPreset(title: "なわとび", icon: "figure.jumprope", reward: 1, category: .exercise),
-        TaskPreset(title: "公園でランニング", icon: "figure.run", reward: 1, category: .exercise),
+        TaskPreset(title: "お皿洗い(10分)", icon: "fork.knife", reward: 0.5),
+        TaskPreset(title: "お風呂掃除", icon: "shower.fill", reward: 1),
+        TaskPreset(title: "肩たたき(10分)", icon: "hand.raised.fill", reward: 1),
+        TaskPreset(title: "ベッドメイキング", icon: "bed.double.fill", reward: 1),
+        TaskPreset(title: "洗濯物たたみ(10分)", icon: "tshirt.fill", reward: 1),
+        TaskPreset(title: "ゴミ出し", icon: "trash.fill", reward: 0.5),
+        TaskPreset(title: "玄関の靴そろえ", icon: "shoe.2.fill", reward: 0.5),
+        TaskPreset(title: "掃除機がけ", icon: "wind", reward: 1.5),
+        TaskPreset(title: "宿題を当日1時間以内に終わらせる", icon: "pencil.and.list.clipboard", reward: 2),
+        TaskPreset(title: "テストで80点以上", icon: "star.leadinghalf.filled", reward: 1),
+        TaskPreset(title: "テストで100点", icon: "star.fill", reward: 3),
+        TaskPreset(title: "なわとび", icon: "figure.jumprope", reward: 1),
+        TaskPreset(title: "公園でランニング", icon: "figure.run", reward: 1),
     ]
 }
 

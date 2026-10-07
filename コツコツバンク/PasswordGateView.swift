@@ -27,25 +27,23 @@ struct PasswordGateView: View {
                 Circle()
                     .fill(ParentTheme.card)
                     .frame(width: 88, height: 88)
-                    .shadow(color: .black.opacity(0.08), radius: 10, x: 0, y: 5)
                 Image(systemName: "lock.fill")
                     .font(.title)
                     .foregroundStyle(ParentTheme.accent)
             }
 
             Text("保護者の暗証番号を入力")
-                .font(.system(.title3, design: .rounded).bold())
+                .font(.system(.title3).bold())
 
             if BiometricAuth.isAvailable {
                 Button(action: authenticateWithFaceID) {
                     Label("Face IDではいる", systemImage: "faceid")
-                        .font(.system(.headline, design: .rounded))
+                        .font(.system(.headline))
                         .foregroundStyle(.white)
                         .frame(maxWidth: 280)
                         .padding(.vertical, 16)
                         .background(ParentTheme.ctaGradient)
                         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                        .shadow(color: ParentTheme.accent.opacity(0.3), radius: 10, x: 0, y: 5)
                 }
 
                 HStack {

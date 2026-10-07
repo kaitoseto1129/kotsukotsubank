@@ -6,6 +6,7 @@
 import SwiftUI
 import SwiftData
 import PhotosUI
+import Supabase
 
 struct SettingsView: View {
     @Environment(SessionStore.self) private var session
@@ -24,6 +25,9 @@ struct SettingsView: View {
     @State private var avatarSelectedPhoto: PhotosPickerItem?
     @State private var showAvatarCamera = false
     @State private var showAvatarCameraUnavailableAlert = false
+    @State private var showDeleteAccountConfirm = false
+    @State private var isDeletingAccount = false
+    @State private var deleteAccountError: String?
 
     private var currencyBinding: Binding<AppCurrency> {
         Binding(
@@ -155,6 +159,27 @@ struct SettingsView: View {
                         Label("ログアウト", systemImage: "rectangle.portrait.and.arrow.right")
                     }
                 }
+
+                Section {
+                    Button(role: .destructive) {
+                        showDeleteAccountConfirm = true
+                    } label: {
+                        if isDeletingAccount {
+                            Label("削除中…", systemImage: "trash.fill")
+                        } else {
+                            Label("アカウントを削除", systemImage: "trash.fill")
+                        }
+                    }
+                    .disabled(isDeletingAccount)
+
+                    if let deleteAccountError {
+                        Text(deleteAccountError)
+                            .font(.caption)
+                            .foregroundStyle(ParentTheme.accent)
+                    }
+                } footer: {
+                    Text("アカウントを削除すると、この端末に保存されているすべてのお子様の記録・写真・ご褒美データが完全に削除され、元に戻せません。")
+                }
             }
             .tint(ParentTheme.accent)
             .navigationTitle("設定")
@@ -194,7 +219,53 @@ struct SettingsView: View {
             } message: {
                 Text("この端末ではカメラが使用できないため、「写真から選ぶ」から選んでください。")
             }
+            .confirmationDialog(
+                "本当にアカウントを削除しますか?",
+                isPresented: $showDeleteAccountConfirm,
+                titleVisibility: .visible
+            ) {
+                Button("削除する", role: .destructive) {
+                    deleteAccount()
+                }
+                Button("キャンセル", role: .cancel) {}
+            } message: {
+                Text("この操作は元に戻せません。すべてのお子様の記録・写真・ご褒美データが完全に削除されます。")
+            }
             .preferredColorScheme(.light)
+        }
+    }
+
+    /// アカウントを完全に削除する。ユーザー自身の明示的な操作(削除ボタン+確認ダイアログ)からのみ呼ばれる。
+    /// Supabase側のアカウントも削除するが、通信に失敗しても端末内のデータ削除・ログアウトは必ず行う。
+    private func deleteAccount() {
+        isDeletingAccount = true
+        deleteAccountError = nil
+
+        let childrenToDelete = children
+        let goalsToDelete = allGoals.filter { goal in childrenToDelete.contains { $0.id == goal.childID } }
+        let missionsToDelete = allMissions.filter { mission in childrenToDelete.contains { $0.id == mission.childID } }
+        let accountToDelete = session.account
+
+        Task {
+            try? await supabase.rpc("delete_own_account").execute()
+
+            await MainActor.run {
+                for goal in goalsToDelete {
+                    modelContext.delete(goal)
+                }
+                for mission in missionsToDelete {
+                    modelContext.delete(mission)
+                }
+                for child in childrenToDelete {
+                    modelContext.delete(child)
+                }
+                if let accountToDelete {
+                    modelContext.delete(accountToDelete)
+                }
+                isDeletingAccount = false
+                session.logOut()
+                dismiss()
+            }
         }
     }
 

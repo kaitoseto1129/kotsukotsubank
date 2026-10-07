@@ -53,6 +53,10 @@ struct ParentDashboardView: View {
                 VStack(spacing: 24) {
                     if let selectedChild {
                         VStack(spacing: 6) {
+                            Text("保護者モード")
+                                .font(.system(.title3).bold())
+                                .foregroundStyle(.white)
+
                             Button {
                                 editingChild = selectedChild
                             } label: {
@@ -78,20 +82,33 @@ struct ParentDashboardView: View {
                                     }
                                     Image(systemName: "pencil.circle.fill")
                                         .font(.title3)
-                                        .foregroundStyle(.white, ParentTheme.accent)
+                                        .foregroundStyle(ParentTheme.accent, .white)
                                         .offset(x: 26, y: 26)
                                 }
                             }
                             .buttonStyle(.plain)
                             .accessibilityLabel("\(selectedChild.name)の画像を変更")
 
-                            Text("保護者モード")
-                                .font(.system(.title3, design: .rounded).bold())
-                            Text("\(selectedChild.name)のサポート中")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            Button {
+                                editingChild = selectedChild
+                            } label: {
+                                HStack(spacing: 6) {
+                                    Text(selectedChild.name)
+                                    Image(systemName: "pencil")
+                                }
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(ParentTheme.accent)
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 7)
+                                    .background(Color.white)
+                                    .clipShape(Capsule())
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.top, 6)
                         }
-                        .padding(.top, 16)
+                        .padding(.vertical, 16)
+                        .frame(maxWidth: .infinity)
+                        .background(ParentTheme.accent)
 
                         if children.count > 1 {
                             Picker("お子様", selection: $selectedChild) {
@@ -106,7 +123,7 @@ struct ParentDashboardView: View {
                         if selectedChild.parentTurnPending {
                             VStack(spacing: 10) {
                                 Text("👑🎉 \(GameLevel.level(forStreak: selectedChild.lastLevel5StreakTrigger).title)達成!")
-                                    .font(.system(.headline, design: .rounded).bold())
+                                    .font(.system(.headline).bold())
                                 Text("\(selectedChild.name)が\(selectedChild.lastLevel5StreakTrigger)日連続でお手伝いを頑張りました。今日はあなたの番です!")
                                     .font(.subheadline)
                                     .multilineTextAlignment(.center)
@@ -114,7 +131,7 @@ struct ParentDashboardView: View {
 
                                 if let task = selectedChild.parentTurnTaskTitle {
                                     Label(task, systemImage: "gift.fill")
-                                        .font(.system(.headline, design: .rounded).bold())
+                                        .font(.system(.headline).bold())
                                         .foregroundStyle(.white)
                                         .padding(.horizontal, 14)
                                         .padding(.vertical, 8)
@@ -131,7 +148,7 @@ struct ParentDashboardView: View {
                                     selectedChild.parentTurnTaskTitle = nil
                                 } label: {
                                     Text("お手伝いした!")
-                                        .font(.system(.headline, design: .rounded))
+                                        .font(.system(.headline))
                                         .foregroundStyle(.white)
                                         .frame(maxWidth: .infinity)
                                         .padding(.vertical, 12)
@@ -151,7 +168,7 @@ struct ParentDashboardView: View {
                             } label: {
                                 VStack(spacing: 8) {
                                     Label("次のご褒美を設定しよう!", systemImage: "arrow.right.circle.fill")
-                                        .font(.system(.headline, design: .rounded).bold())
+                                        .font(.system(.headline).bold())
                                         .foregroundStyle(.white)
                                     Text("今の目標を達成したので、次の目標・ご褒美を決めてあげましょう。ここをタップすると設定画面が開きます。")
                                         .font(.caption)

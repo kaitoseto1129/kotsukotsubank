@@ -46,7 +46,7 @@ struct AboutAppView: View {
 
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text("\(index + 1). \(slide.title)")
-                                        .font(.system(.headline, design: .rounded))
+                                        .font(.system(.headline))
                                     Text(slide.body)
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
@@ -60,16 +60,21 @@ struct AboutAppView: View {
 
                     VStack(alignment: .leading, spacing: 10) {
                         Label("複数の端末で使う場合", systemImage: "iphone.and.arrow.forward")
-                            .font(.system(.headline, design: .rounded))
+                            .font(.system(.headline))
                             .foregroundStyle(ParentTheme.accent)
 
-                        Text("このアプリのデータは、それぞれの端末の中だけに保存されます。iPhoneとiPadの間で自動的に同期される仕組みはありません。")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("このアプリのデータは、それぞれの端末の中だけに保存されます。iPhoneとiPadの間で自動的に")
+                                .font(.caption)
+                                .foregroundStyle(.primary)
+                            Text("同期される仕組みはありません。")
+                                .font(.title3.bold())
+                                .foregroundStyle(.primary)
+                        }
 
                         Text("例えば、お子さんにiPadを、保護者の方がiPhoneをお使いの場合は、それぞれの端末で個別に会員登録をしてください(同じメールアドレスでも登録できます)。お子さんがiPadでミッションを完了したら、保護者の方がそのiPadを受け取って「保護者」モードに切り替えて承認する、という流れになります。")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.primary)
                     }
                     .cardStyle()
                     .padding(.horizontal, 24)

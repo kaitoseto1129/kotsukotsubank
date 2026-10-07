@@ -20,6 +20,7 @@ struct SignUpView: View {
     @State private var errorMessage: String?
     @State private var completedAccount: FamilyAccount?
     @State private var isSigningUp = false
+    @State private var newChildren: [ChildProfile] = []
 
     private var isEmailValid: Bool {
         email.contains("@") && email.contains(".")
@@ -38,16 +39,16 @@ struct SignUpView: View {
                             .frame(width: 40, height: 40)
                             .background(ParentTheme.card)
                             .clipShape(Circle())
-                            .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 2)
                     }
                     Spacer()
                 }
 
                 VStack(spacing: 6) {
-                    Text("🎉")
+                    Image(systemName: "person.crop.circle.badge.plus")
                         .font(.system(size: 48))
+                        .foregroundStyle(ParentTheme.accent)
                     Text("新規会員登録")
-                        .font(.system(.title2, design: .rounded).bold())
+                        .font(.system(.title2).bold())
                     Text("家族みんなでコツコツ貯めよう")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
@@ -112,7 +113,7 @@ struct SignUpView: View {
                 if newValue == nil { completedAccount = nil }
             }
         )) { account in
-            SignUpCompleteView {
+            SignUpCompleteView(children: newChildren) {
                 completedAccount = nil
                 session.account = account
                 BiometricAuth.rememberAccount(account.id)
@@ -161,9 +162,11 @@ struct SignUpView: View {
         let child2 = ChildProfile(accountID: account.id, name: "子ども2", avatarSystemImage: "star.fill", colorHex: "FF6B00")
         modelContext.insert(child1)
         modelContext.insert(child2)
+        newChildren = [child1, child2]
 
         isSigningUp = false
         completedAccount = account
+        AnalyticsService.log(.signUp)
     }
 }
 

@@ -17,17 +17,16 @@ struct WelcomeView: View {
                 ZStack {
                     Circle()
                         .fill(ParentTheme.ctaGradient.opacity(0.18))
-                        .frame(width: 140, height: 140)
+                        .frame(width: 238, height: 238)
                     Circle()
                         .fill(ParentTheme.card)
-                        .frame(width: 108, height: 108)
-                        .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 6)
+                        .frame(width: 184, height: 184)
                     Text("🏦")
-                        .font(.system(size: 56))
+                        .font(.system(size: 95))
                 }
 
                 Text("コツコツバンク")
-                    .font(.system(.largeTitle, design: .rounded).bold())
+                    .font(.system(.largeTitle).bold())
 
                 Text("お手伝いをがんばって、\nコツコツ貯めよう!")
                     .font(.subheadline)
@@ -40,14 +39,19 @@ struct WelcomeView: View {
                     .padding(.top, 4)
 
                 Label("21日つづけるとサプライズが起きる!", systemImage: "sparkles")
-                    .font(.system(.subheadline, design: .rounded).bold())
+                    .font(.system(.subheadline).bold())
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
                     .background(ParentTheme.ctaGradient)
                     .clipShape(Capsule())
-                    .shadow(color: ParentTheme.accent.opacity(0.35), radius: 10, x: 0, y: 5)
                     .padding(.top, 10)
+
+                Label("注意:2台の端末で同期される仕組みはありません", systemImage: "exclamationmark.triangle.fill")
+                    .font(.footnote.bold())
+                    .foregroundStyle(ParentTheme.accent)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 8)
             }
 
             Spacer()

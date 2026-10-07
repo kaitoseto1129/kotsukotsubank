@@ -27,7 +27,7 @@ struct ParentTaskChoiceView: View {
                 .font(.system(size: 48))
 
             Text("おうちの人へのお願いを\n1つ選ぼう!")
-                .font(.system(.title2, design: .rounded).bold())
+                .font(.system(.title2).bold())
                 .foregroundStyle(Palette.textPrimary)
                 .multilineTextAlignment(.center)
 
@@ -42,7 +42,7 @@ struct ParentTaskChoiceView: View {
                         onFinished()
                     } label: {
                         Text(option)
-                            .font(.system(.headline, design: .rounded))
+                            .font(.system(.headline))
                             .foregroundStyle(Palette.textPrimary)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)

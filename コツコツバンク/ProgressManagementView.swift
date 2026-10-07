@@ -38,12 +38,7 @@ struct ProgressManagementView: View {
     }
 
     private var achievedAmount: Double {
-        guard let redeemedAt = goal?.redeemedAt else {
-            return approvedMissions.reduce(0) { $0 + $1.payoutAmount }
-        }
-        return approvedMissions
-            .filter { ($0.completedAt ?? $0.createdAt) > redeemedAt }
-            .reduce(0) { $0 + $1.payoutAmount }
+        Goal.savedAmount(childID: child.id, goals: allGoals, missions: allMissions)
     }
 
     private var weeklyData: [WeekdayAmount] {
@@ -70,17 +65,22 @@ struct ProgressManagementView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Text(goal.title)
-                                .font(.system(.headline, design: .rounded))
+                                .font(.system(.headline))
                             Spacer()
                         }
 
                         if let data = goal.imageData, let image = PlatformImage(data: data) {
-                            image.resizableImage
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: 160)
-                                .frame(maxWidth: .infinity)
-                                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                                .clipped()
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                    .fill(Color(white: 0.94))
+                                image.resizableImage
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: 160)
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .frame(height: 160)
+                            .frame(maxWidth: .infinity)
+                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                         }
 
                         Text("達成額: \(moneyString(achievedAmount, currencyCode: currencyCode)) / \(moneyString(goal.price, currencyCode: currencyCode))")
@@ -175,17 +175,6 @@ struct ProgressManagementView: View {
                     .cardStyle()
                 }
 
-                if approvedMissions.isEmpty {
-                    Button {
-                        DemoDataSeeder.seedGoalIfNeeded(for: child, context: modelContext, existingGoals: allGoals)
-                        DemoDataSeeder.seedMissions(for: child, context: modelContext)
-                    } label: {
-                        Label("サンプルデータを追加(動作確認用)", systemImage: "wand.and.stars")
-                            .font(.caption.bold())
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.secondary)
-                }
             }
             .padding(24)
         }

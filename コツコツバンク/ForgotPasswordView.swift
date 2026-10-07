@@ -40,7 +40,6 @@ struct ForgotPasswordView: View {
                             .frame(width: 40, height: 40)
                             .background(ParentTheme.card)
                             .clipShape(Circle())
-                            .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 2)
                     }
                     Spacer()
                 }
@@ -49,7 +48,7 @@ struct ForgotPasswordView: View {
                     Text("🔑")
                         .font(.system(size: 48))
                     Text("パスワード再設定")
-                        .font(.system(.title2, design: .rounded).bold())
+                        .font(.system(.title2).bold())
                 }
                 .padding(.top, 4)
 
@@ -87,7 +86,7 @@ struct ForgotPasswordView: View {
             VStack(spacing: 16) {
                 if let raw = account.securityQuestionRaw, let question = SecurityQuestion(rawValue: raw) {
                     Text(question.text)
-                        .font(.system(.headline, design: .rounded))
+                        .font(.system(.headline))
                         .multilineTextAlignment(.center)
 
                     ParentTextField(title: "答え", text: $answer, icon: "pencil")

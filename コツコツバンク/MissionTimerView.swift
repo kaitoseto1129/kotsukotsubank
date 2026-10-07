@@ -46,13 +46,13 @@ struct MissionTimerView: View {
             .foregroundStyle(Palette.accentSoft)
 
             Text(LocalizedStringKey(mission.title))
-                .font(.system(.title, design: .rounded).bold())
+                .font(.system(.title).bold())
                 .foregroundStyle(Palette.textPrimary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 24)
 
             Text("+\(moneyString(mission.reward, currencyCode: session.account?.currencyCode ?? AppCurrency.jpy.rawValue))\(mission.rewardUnit.suffix)")
-                .font(.system(.title3, design: .rounded).bold())
+                .font(.system(.title3).bold())
                 .foregroundStyle(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 6)
@@ -88,7 +88,7 @@ struct MissionTimerView: View {
                 if isRunning {
                     Button(action: pauseTimer) {
                         Label("止める", systemImage: "pause.fill")
-                            .font(.system(.headline, design: .rounded))
+                            .font(.system(.headline))
                             .foregroundStyle(Palette.accent)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
@@ -100,7 +100,7 @@ struct MissionTimerView: View {
                 } else {
                     Button(action: startTimer) {
                         Label(mission.timerAccumulatedSeconds > 0 ? "再開する" : "スタート", systemImage: "play.fill")
-                            .font(.system(.headline, design: .rounded))
+                            .font(.system(.headline))
                             .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
@@ -130,7 +130,7 @@ struct MissionTimerView: View {
                 }
             } label: {
                 Text("できた!")
-                    .font(.system(.headline, design: .rounded))
+                    .font(.system(.headline))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)

@@ -21,7 +21,7 @@ struct MissionCameraView: View {
             Spacer()
 
             Text("写真を撮ってね")
-                .font(.system(.title2, design: .rounded).bold())
+                .font(.system(.title2).bold())
                 .foregroundStyle(Palette.textPrimary)
 
             ZStack {
@@ -85,7 +85,7 @@ struct MissionCameraView: View {
                     MissionCommentSubmitView(mission: mission, photoData: capturedImageData, childName: childName, onFinished: onFinished)
                 } label: {
                     Text("これでOK!")
-                        .font(.system(.headline, design: .rounded))
+                        .font(.system(.headline))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)

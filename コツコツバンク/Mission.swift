@@ -95,6 +95,28 @@ final class Mission {
         set { categoryRaw = newValue.rawValue }
     }
 
+    /// 子ども画面などに出すイラスト。保護者が選んだ絵があればそれを、なければタスク名から近い絵を選ぶ。
+    var displayIconName: String {
+        if let presetIconName { return presetIconName }
+        let keywordIcons: [(keywords: [String], icon: String)] = [
+            (["宿題", "勉強", "ドリル", "テスト", "算数", "国語", "計算", "漢字", "英語", "homework", "study"], "pencil.and.ruler.fill"),
+            (["読書", "本を", "音読", "read"], "book.fill"),
+            (["皿", "食器", "ごはん", "ご飯", "食事", "料理", "dish", "meal"], "fork.knife"),
+            (["ゴミ", "ごみ", "trash", "garbage"], "trash.fill"),
+            (["洗濯", "服", "たたみ", "laundry"], "tshirt.fill"),
+            (["お風呂", "風呂", "bath"], "bathtub.fill"),
+            (["掃除", "そうじ", "片づけ", "片付け", "clean"], "sparkles"),
+            (["寝", "布団", "ベッド", "bed"], "bed.double.fill"),
+            (["散歩", "犬", "ペット", "えさ", "walk", "pet"], "pawprint.fill"),
+            (["水やり", "植物", "花", "plant"], "leaf.fill"),
+            (["買い物", "買物", "shopping"], "cart.fill"),
+        ]
+        for entry in keywordIcons where entry.keywords.contains(where: { title.localizedCaseInsensitiveContains($0) }) {
+            return entry.icon
+        }
+        return category.icon
+    }
+
     /// 実際に支払われる金額。分給タスクは作業時間(10分単位) × 分給、固定額タスクはそのままの金額。
     var payoutAmount: Double {
         guard rewardUnit == .perHour else { return reward }

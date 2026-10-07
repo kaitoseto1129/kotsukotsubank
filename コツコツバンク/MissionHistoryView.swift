@@ -85,14 +85,14 @@ private struct HistoryRow: View {
                     .fill(Palette.cardGradient)
                     .frame(width: 56, height: 56)
                     .overlay {
-                        Image(systemName: mission.presetIconName ?? "photo")
-                            .foregroundStyle(mission.presetIconName != nil ? Palette.accent : Palette.accent.opacity(0.3))
+                        Image(systemName: mission.photoData == nil ? mission.displayIconName : "photo")
+                            .foregroundStyle(mission.photoData == nil ? Palette.accent : Palette.accent.opacity(0.3))
                     }
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(LocalizedStringKey(mission.title))
-                    .font(.system(.subheadline, design: .rounded).bold())
+                    .font(.system(.subheadline).bold())
                     .foregroundStyle(Palette.textPrimary)
                 Text((mission.completedAt ?? mission.createdAt).formatted(date: .abbreviated, time: .shortened))
                     .font(.caption2)
@@ -117,7 +117,6 @@ private struct HistoryRow: View {
         .padding(12)
         .background(Palette.cardGradient)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
     }
 }
 

@@ -20,7 +20,7 @@ struct MissionCommentSubmitView: View {
     var body: some View {
         VStack(spacing: 20) {
             Text("ミッション: \(Text(LocalizedStringKey(mission.title)))")
-                .font(.system(.title3, design: .rounded).bold())
+                .font(.system(.title3).bold())
                 .foregroundStyle(Palette.textPrimary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 24)
@@ -56,12 +56,12 @@ struct MissionCommentSubmitView: View {
 
             if didSubmit {
                 Label("今日もえらいね!", systemImage: "hands.sparkles.fill")
-                    .font(.system(.headline, design: .rounded))
+                    .font(.system(.headline))
                     .foregroundStyle(.green)
             } else {
                 Button(action: submit) {
                     Text("送信する")
-                        .font(.system(.headline, design: .rounded))
+                        .font(.system(.headline))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
@@ -82,6 +82,7 @@ struct MissionCommentSubmitView: View {
         mission.comment = comment
         mission.status = .submitted
         mission.completedAt = .now
+        AnalyticsService.log(.missionSubmitted)
         didSubmit = true
 
         NotificationManager.shared.notify(

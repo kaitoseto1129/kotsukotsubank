@@ -25,8 +25,9 @@ enum ProductLinkFetcher {
             throw URLError(.badURL)
         }
 
-        if let host = url.host?.lowercased(), host.contains("amazon.") {
-            return try await AmazonPageScraper().fetch(url: url)
+        if let host = url.host?.lowercased(), host.contains("amazon.") || host == "a.co" {
+            let resolvedURL = await Self.resolveFinalURL(url) ?? url
+            return try await AmazonPageScraper().fetch(url: resolvedURL)
         }
 
         var request = URLRequest(url: url, timeoutInterval: 10)
@@ -50,6 +51,19 @@ enum ProductLinkFetcher {
         let price = priceValue(html: html)
 
         return ProductMetadata(title: title, imageData: imageData, price: price)
+    }
+
+    /// 「a.co」等の短縮リンクは、WKWebView内でリダイレクトの途中経過を
+    /// 本来のページと誤認してしまうことがあるため、先に本来の商品ページURLへ解決しておく。
+    private static func resolveFinalURL(_ url: URL) async -> URL? {
+        var request = URLRequest(url: url, timeoutInterval: 8)
+        request.httpMethod = "HEAD"
+        request.setValue(
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
+            forHTTPHeaderField: "User-Agent"
+        )
+        guard let (_, response) = try? await URLSession.shared.data(for: request) else { return nil }
+        return response.url
     }
 
     private static func metaContent(html: String, key: String) -> String? {
@@ -119,21 +133,26 @@ private final class AmazonPageScraper: NSObject, WKNavigationDelegate {
     private var didResumeLoad = false
 
     func fetch(url: URL) async throws -> ProductMetadata {
+        // 毎回Cookie等が空の状態(非永続ストア)にすると、Amazon側にボットとして
+        // 警戒されやすくなる(ブロックされたページを読んでしまう)ことが分かったため、
+        // 通常のストアを使いつつ、リクエスト自体はキャッシュを無視して最新のページを取得する。
         let webView = WKWebView(frame: .zero)
         webView.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1"
         webView.navigationDelegate = self
         self.webView = webView
 
+        // 古い価格のキャッシュを見てしまわないよう、必ずサーバーから最新のページを取り直す
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        request.setValue("https://www.google.com/", forHTTPHeaderField: "Referer")
+
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             self.loadContinuation = continuation
-            webView.load(URLRequest(url: url))
+            webView.load(request)
             DispatchQueue.main.asyncAfter(deadline: .now() + 15) { [weak self] in
                 self?.resumeLoad(.failure(URLError(.timedOut)))
             }
         }
-
-        // Amazonは初回表示後にも価格などを追加で描画することがあるため、少し待ってから読み取る
-        try? await Task.sleep(nanoseconds: 1_200_000_000)
 
         let script = """
         (function() {
@@ -151,6 +170,22 @@ private final class AmazonPageScraper: NSObject, WKNavigationDelegate {
                 || text('.a-price .a-offscreen')
                 || text('#priceblock_ourprice')
                 || text('#priceblock_dealprice');
+            // 上のセレクタで見つからない時のための保険として、
+            // ページ内の「¥1,234」のような表記をあいまい検索する
+            if (!price) {
+                var offscreenEls = document.querySelectorAll('.a-offscreen, .a-price-whole');
+                for (var i = 0; i < offscreenEls.length; i++) {
+                    var t = offscreenEls[i].textContent.trim();
+                    if (/[¥￥]\\s?[0-9][0-9,]*/.test(t)) {
+                        price = t;
+                        break;
+                    }
+                }
+            }
+            if (!price) {
+                var bodyMatch = document.body.innerText.match(/[¥￥]\\s?[0-9][0-9,]{1,8}/);
+                if (bodyMatch) { price = bodyMatch[0]; }
+            }
             var img = document.querySelector('#landingImage')
                 || document.querySelector('#imgTagWrapperId img')
                 || document.querySelector('#main-image');
@@ -159,11 +194,29 @@ private final class AmazonPageScraper: NSObject, WKNavigationDelegate {
         })();
         """
 
-        guard let jsonString = try await webView.evaluateJavaScript(script) as? String,
-              let jsonData = jsonString.data(using: .utf8),
-              let parsed = try? JSONDecoder().decode(AmazonExtractResult.self, from: jsonData) else {
-            throw URLError(.cannotParseResponse)
+        // Amazonは初回表示後にも価格などを追加で描画することがあり、特にスポンサー広告経由の
+        // リンクは価格の表示が遅れることがあるため、見つかるまで数回に分けて読み取りを試み、
+        // 一度見つかった項目は後の失敗で上書きされないようにする。
+        var bestTitle: String?
+        var bestPrice: String?
+        var bestImageURL: String?
+        for attempt in 0..<9 {
+            try? await Task.sleep(nanoseconds: attempt == 0 ? 1_200_000_000 : 1_000_000_000)
+
+            guard let jsonString = try? await webView.evaluateJavaScript(script) as? String,
+                  let jsonData = jsonString.data(using: .utf8),
+                  let result = try? JSONDecoder().decode(AmazonExtractResult.self, from: jsonData) else {
+                continue
+            }
+            bestTitle = bestTitle ?? result.title
+            bestPrice = bestPrice ?? result.price
+            bestImageURL = bestImageURL ?? result.imageURL
+            if bestTitle != nil && bestPrice != nil && bestImageURL != nil {
+                break
+            }
         }
+
+        let parsed = AmazonExtractResult(title: bestTitle, price: bestPrice, imageURL: bestImageURL)
 
         var imageData: Data?
         if let imageURLString = parsed.imageURL, let imageURL = URL(string: imageURLString) {

@@ -23,6 +23,11 @@ enum SoundEffects {
         play(makeFanfareBuffer)
     }
 
+    /// 目標達成のびっくり箱が開いた時の、拍手と歓声(ユーザー提供の音源を約3秒に伸ばして再生)
+    static func playCelebrationCheer() {
+        playFile(named: "celebration_cheer", extension: "mp3", targetDuration: 3.0)
+    }
+
     /// バンドル内の音声ファイルを、ピッチを保ったまま指定の長さに伸縮して再生する
     private static func playFile(named name: String, extension ext: String, targetDuration: Double?) {
         let session = AVAudioSession.sharedInstance()

@@ -32,7 +32,7 @@ struct MissionIllustrationView: View {
             Spacer()
 
             Text("よくできました!")
-                .font(.system(.title2, design: .rounded).bold())
+                .font(.system(.title2).bold())
                 .foregroundStyle(Palette.textPrimary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 24)
@@ -58,7 +58,7 @@ struct MissionIllustrationView: View {
             .shadow(color: .black.opacity(0.12), radius: 12, x: 0, y: 6)
 
             Text(LocalizedStringKey(mission.title))
-                .font(.system(.headline, design: .rounded).bold())
+                .font(.system(.headline).bold())
                 .foregroundStyle(Palette.textSecondary)
 
             HStack(spacing: 14) {
@@ -85,12 +85,12 @@ struct MissionIllustrationView: View {
 
             if didSubmit {
                 Label("今日もえらいね!", systemImage: "hands.sparkles.fill")
-                    .font(.system(.headline, design: .rounded))
+                    .font(.system(.headline))
                     .foregroundStyle(.green)
             } else {
                 Button(action: submit) {
                     Text("おくる")
-                        .font(.system(.headline, design: .rounded))
+                        .font(.system(.headline))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)

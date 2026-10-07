@@ -28,6 +28,12 @@ struct AddChildView: View {
 
     private var isEditing: Bool { existingChild != nil }
 
+    /// サインアップ時などに自動でつけられた「子ども1」のような仮の名前かどうか。
+    /// 保護者にまだ実際のお名前を入力してもらっていないことを示す目印として使う。
+    private var isPlaceholderName: Bool {
+        name.range(of: "^子ども[0-9]+$", options: .regularExpression) != nil
+    }
+
     var body: some View {
         NavigationStack {
             Form {
@@ -40,7 +46,6 @@ struct AddChildView: View {
                             Circle()
                                 .fill(Color(hex: selectedColor))
                                 .frame(width: 76, height: 76)
-                                .shadow(color: Color(hex: selectedColor).opacity(0.4), radius: 8, x: 0, y: 4)
 
                             if let avatarImageData, let image = PlatformImage(data: avatarImageData) {
                                 image.resizableImage
@@ -54,11 +59,14 @@ struct AddChildView: View {
                             }
                         }
 
-                        HStack(spacing: 16) {
+                        VStack(spacing: 10) {
                             PhotosPicker(selection: $selectedPhoto, matching: .images) {
                                 Label("写真を選ぶ", systemImage: "photo.on.rectangle")
-                                    .font(.caption.bold())
+                                    .font(.subheadline.bold())
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 10)
                             }
+                            .buttonStyle(.bordered)
 
                             Button {
                                 #if os(iOS)
@@ -72,27 +80,51 @@ struct AddChildView: View {
                                 #endif
                             } label: {
                                 Label("写真を撮る", systemImage: "camera.fill")
-                                    .font(.caption.bold())
+                                    .font(.subheadline.bold())
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 10)
                             }
+                            .buttonStyle(.bordered)
 
                             if avatarImageData != nil {
                                 Button(role: .destructive) {
                                     avatarImageData = nil
                                 } label: {
                                     Label("削除", systemImage: "trash")
-                                        .font(.caption.bold())
+                                        .font(.subheadline.bold())
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 10)
                                 }
+                                .buttonStyle(.bordered)
                             }
                         }
                         .tint(ParentTheme.accent)
+                        .padding(.horizontal, 24)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 8)
                     .listRowBackground(Color.clear)
                 }
 
-                Section("お子様の情報") {
+                Section {
                     TextField("お名前", text: $name)
+                        .padding(10)
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .stroke(isPlaceholderName ? Color.red : Color.clear, lineWidth: 2)
+                        )
+                        // 左右に余白を残す(ぴったり端まで広げると、枠の左右がリストの縁で切れて見えるため)
+                        .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+                        .listRowBackground(Color.clear)
+                } header: {
+                    Text("お子様の情報")
+                } footer: {
+                    if isPlaceholderName {
+                        Text("まだ仮のお名前です。実際のお名前を入力してください。")
+                            .foregroundStyle(.red)
+                    }
                 }
 
                 Section("アイコン") {
@@ -220,6 +252,7 @@ struct AddChildView: View {
             child.avatarImageData = avatarImageData
             child.emptyStateIconName = selectedEmptyStateIcon
             modelContext.insert(child)
+            AnalyticsService.log(.childAdded)
         }
         dismiss()
     }

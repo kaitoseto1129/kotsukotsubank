@@ -26,7 +26,6 @@ struct GuardianPasswordSetupView: View {
                 Circle()
                     .fill(ParentTheme.card)
                     .frame(width: 88, height: 88)
-                    .shadow(color: .black.opacity(0.08), radius: 10, x: 0, y: 5)
                 Image(systemName: "person.fill")
                     .font(.title)
                     .foregroundStyle(ParentTheme.accent)
@@ -34,7 +33,7 @@ struct GuardianPasswordSetupView: View {
 
             VStack(spacing: 6) {
                 Text("保護者パスワードを設定")
-                    .font(.system(.title3, design: .rounded).bold())
+                    .font(.system(.title3).bold())
                 Text("はじめて保護者モードに入ります。\nこれから使う4桁の暗証番号を決めてください。")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)

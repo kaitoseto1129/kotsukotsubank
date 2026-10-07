@@ -16,7 +16,7 @@ enum Palette {
     /// 達成の円などメインで使う濃いブルー
     static let accent = Color(red: 0.08, green: 0.24, blue: 0.55)
     /// グラデーションの相方や、控えめな強調に使う中間の青
-    static let accentSoft = Color(red: 0.22, green: 0.45, blue: 0.82)
+    static let accentSoft = Color(red: 0.12, green: 0.31, blue: 0.85)
     /// 背景の上に置く本文用のテキスト色(白背景ではないので黒に近い色にする)
     static let textPrimary = Color(red: 0.09, green: 0.13, blue: 0.22)
     static let textSecondary = Color(red: 0.35, green: 0.42, blue: 0.55)
@@ -30,13 +30,13 @@ enum Palette {
     )
 
     static let cardGradient = LinearGradient(
-        colors: [cardTop, card],
+        colors: [card, card],
         startPoint: .top,
         endPoint: .bottom
     )
 
     static let ctaGradient = LinearGradient(
-        colors: [accent, accentSoft],
+        colors: [accentSoft, accentSoft],
         startPoint: .leading,
         endPoint: .trailing
     )
@@ -59,6 +59,9 @@ struct ChildHomeView: View {
     @State private var missionPath = NavigationPath()
     @State private var gaugeAppeared = false
     @State private var showLevel5Celebration = false
+    /// 目標達成のお祝い(プレゼントの箱が開く画面)
+    @State private var showGoalAchieved = false
+    @State private var goalAchievedShown = false
     @State private var showBackgroundPicker = false
 
     @Query(sort: \Goal.createdAt, order: .reverse) private var allGoals: [Goal]
@@ -74,17 +77,8 @@ struct ChildHomeView: View {
         allMissions.filter { $0.childID == child.id }
     }
 
-    private var approvedMissionsForGoal: [Mission] {
-        let redeemedAt = currentGoal?.redeemedAt
-        return missions.filter { mission in
-            guard mission.status == .approved else { return false }
-            guard let redeemedAt else { return true }
-            return (mission.completedAt ?? mission.createdAt) > redeemedAt
-        }
-    }
-
     private var earnedAmount: Double {
-        approvedMissionsForGoal.reduce(0) { $0 + $1.payoutAmount }
+        Goal.savedAmount(childID: child.id, goals: allGoals, missions: allMissions)
     }
 
     private var currencyCode: String {
@@ -101,22 +95,9 @@ struct ChildHomeView: View {
         return earnedAmount >= goal.price
     }
 
-    /// 直近7日間の承認ペースから、目標達成までの残り日数をざっくり見積もる
-    private var estimatedProgress: (days: Int, dailyAmount: Double)? {
-        guard let goal = currentGoal else { return nil }
-        let remaining = goal.price - earnedAmount
-        guard remaining > 0 else { return nil }
-
-        let calendar = Calendar.current
-        let recentTotal = approvedMissionsForGoal
-            .filter { (0...7).contains(calendar.dateComponents([.day], from: $0.completedAt ?? $0.createdAt, to: .now).day ?? -1) }
-            .reduce(0) { $0 + $1.payoutAmount }
-
-        guard recentTotal > 0 else { return nil }
-        let dailyPace = recentTotal / 7
-        guard dailyPace > 0 else { return nil }
-        let days = max(Int((remaining / dailyPace).rounded(.up)), 1)
-        return (days, dailyPace)
+    /// 前のご褒美を受け取り済みで、保護者がまだ次のご褒美を設定していない状態かどうか
+    private var isWaitingForNextGoal: Bool {
+        currentGoal?.redeemedAt != nil
     }
 
     private var todaysMissions: [Mission] {
@@ -206,9 +187,15 @@ struct ChildHomeView: View {
         .onAppear {
             playCelebrationSoundIfNeeded()
             checkLevel5Achievement()
+            showGoalAchievedIfNeeded()
         }
         .fullScreenCover(isPresented: $showLevel5Celebration) {
             Level5CelebrationView(child: child, streakDays: child.lastLevel5StreakTrigger, onFinished: { showLevel5Celebration = false })
+        }
+        .fullScreenCover(isPresented: $showGoalAchieved) {
+            if let goal = currentGoal {
+                GoalAchievedView(goal: goal)
+            }
         }
         .sheet(isPresented: $showBackgroundPicker) {
             BackgroundColorPickerView(child: child)
@@ -222,6 +209,17 @@ struct ChildHomeView: View {
         SoundEffects.playCoinSound()
         for mission in newlyApproved {
             mission.celebrationPlayed = true
+        }
+    }
+
+    /// 目標金額に届いていて、まだご褒美を受け取っていないとき、豚が満たされる様子を見せてから、
+    /// プレゼントの箱が開くお祝い画面を自動で出す。(「目標達成をチェックする」ボタンからも、いつでも見られる)
+    private func showGoalAchievedIfNeeded() {
+        guard isGoalAchieved, !isWaitingForNextGoal, !goalAchievedShown, !showLevel5Celebration else { return }
+        goalAchievedShown = true
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 1_800_000_000)
+            showGoalAchieved = true
         }
     }
 
@@ -260,61 +258,24 @@ struct ChildHomeView: View {
                 }
             }
 
-            ZStack {
-                Circle()
-                    .fill(Palette.ctaGradient.opacity(0.35))
-                    .frame(width: 320, height: 320)
-                    .blur(radius: 30)
-                    .opacity(gaugeAppeared ? 1 : 0)
+            Text("21日連続でお手伝いすると、レベルアップ&サプライズ!")
+                .font(.caption2.bold())
+                .foregroundStyle(Palette.textSecondary)
+                .multilineTextAlignment(.center)
 
-                Circle()
-                    .stroke(Palette.accent.opacity(0.12), lineWidth: 20)
-                    .frame(width: 260, height: 260)
+            VStack(spacing: 10) {
+                // 豚の線画に、貯まった分だけ下からピンク色が満ちていく
+                PiggyBankGaugeView(progress: gaugeAppeared ? progress : 0)
+                    .frame(width: 300, height: 150)
 
-                Circle()
-                    .trim(from: 0, to: gaugeAppeared ? progress : 0)
-                    .stroke(Palette.ctaGradient, style: StrokeStyle(lineWidth: 20, lineCap: .round))
-                    .frame(width: 260, height: 260)
-                    .rotationEffect(.degrees(-90))
-                    .shadow(color: Palette.accentSoft.opacity(0.8), radius: 10)
-                    .animation(.spring(response: 1.1, dampingFraction: 0.75), value: gaugeAppeared)
-                    .animation(.spring(response: 0.9, dampingFraction: 0.75), value: progress)
-
-                ZStack {
-                    Circle()
-                        .fill(Palette.cardGradient)
-                        .frame(width: 216, height: 216)
-
-                    if isGoalAchieved, let data = currentGoal?.imageData, let image = PlatformImage(data: data) {
-                        image.resizableImage
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 216, height: 216)
-                            .clipShape(Circle())
-                            .transition(.scale(scale: 0.2).combined(with: .opacity))
-                    } else {
-                        Image(systemName: "gift.fill")
-                            .font(.system(size: 64))
-                            .foregroundStyle(currentGoal == nil ? Palette.accent.opacity(0.3) : Palette.accentSoft)
-                            .scaleEffect(currentGoal != nil && gaugeAppeared ? 1.08 : 1.0)
-                            .animation(currentGoal != nil ? .easeInOut(duration: 1.1).repeatForever(autoreverses: true) : .default, value: gaugeAppeared)
-                    }
-                }
-                .overlay(Circle().stroke(Palette.accent.opacity(0.15), lineWidth: 2))
-                .shadow(color: .black.opacity(0.2), radius: 16, x: 0, y: 8)
-                .animation(.spring(response: 0.65, dampingFraction: 0.6), value: isGoalAchieved)
-
-                VStack {
-                    Spacer()
-                    Text("\(Int(progress * 100))%")
-                        .font(.system(.headline, design: .rounded).bold())
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 6)
-                        .background(Palette.ctaGradient)
-                        .clipShape(Capsule())
-                        .shadow(color: Palette.accent.opacity(0.5), radius: 8, x: 0, y: 3)
-                }
-                .frame(width: 260, height: 260 + 34)
+                Text("\(Int(progress * 100))%")
+                    .font(.system(.headline).bold())
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 6)
+                    .background(Palette.ctaGradient)
+                    .clipShape(Capsule())
+                    .shadow(color: Palette.accent.opacity(0.5), radius: 8, x: 0, y: 3)
             }
             .padding(.top, 12)
             .onAppear {
@@ -327,26 +288,35 @@ struct ChildHomeView: View {
                     .foregroundStyle(Palette.accentSoft)
 
                 Group {
-                    if let goalTitle = currentGoal?.title {
+                    if isWaitingForNextGoal {
+                        Text("🎉 前のご褒美をゲットしたね!")
+                    } else if let goalTitle = currentGoal?.title {
                         Text(goalTitle)
                     } else {
                         Text("目標がまだ設定されていません")
                     }
                 }
-                    .font(.system(.title2, design: .rounded).bold())
+                    .font(.system(.title2).bold())
                     .foregroundStyle(Palette.textPrimary)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .padding(.horizontal, 24)
 
-                if let goal = currentGoal {
-                    if let estimatedProgress {
+                if isWaitingForNextGoal {
+                    Text("次のプレゼントをおうちの人といっしょにきめてね。")
+                        .font(.subheadline)
+                        .foregroundStyle(Palette.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 24)
+                } else if let goal = currentGoal {
+                    if !isGoalAchieved {
                         Label(
-                            "毎日\(moneyString(estimatedProgress.dailyAmount, currencyCode: currencyCode))やれば、あと約\(estimatedProgress.days)日で達成!",
+                            "残り\(moneyString(max(goal.price - earnedAmount, 0), currencyCode: currencyCode))!",
                             systemImage: "flame.fill"
                         )
-                            .font(.caption.bold())
+                            .font(.system(size: 24, weight: .bold))
                             .foregroundStyle(.orange)
+                            .multilineTextAlignment(.center)
                             .padding(.top, 2)
                     }
 
@@ -376,7 +346,7 @@ struct ChildHomeView: View {
     private func missionRow(title: LocalizedStringKey, icon: String, missions: [Mission], emptyText: LocalizedStringKey?, emptyIcon: String? = nil) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Label(title, systemImage: icon)
-                .font(.system(.headline, design: .rounded))
+                .font(.system(.headline))
                 .foregroundStyle(Palette.textPrimary)
                 .padding(.horizontal, 20)
 
@@ -415,6 +385,52 @@ struct ChildHomeView: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - 豚の線画ゲージ
+
+/// 豚の線画に、貯めた金額÷目標金額の割合だけ、下から上へピンク色がゆっくり満ちていくビュー。
+/// - `PigMask`: 豚の輪郭の内側だけを示す形(色はこの形の中にしか出ない)
+/// - `PigLine`: 輪郭線・耳・目・鼻・しっぽの線画(どの割合でも、常に一番上に見える)
+private struct PiggyBankGaugeView: View {
+    /// 0.0〜1.0の達成度
+    var progress: Double
+
+    private let fillPink = Color(red: 1.0, green: 0.42, blue: 0.62)
+    private let waterlinePink = Color(red: 1.0, green: 0.62, blue: 0.76)
+
+    var body: some View {
+        ZStack {
+            // からっぽの部分(白地)
+            Color.white
+                .mask(Image("PigMask").resizable())
+
+            // 貯めた金額の割合だけ、下からピンク色で満ちていく
+            GeometryReader { proxy in
+                let filledHeight = max(0, proxy.size.height * progress)
+                ZStack(alignment: .bottom) {
+                    Rectangle()
+                        .fill(fillPink)
+                        .frame(height: filledHeight)
+                    // 水面のライン
+                    Rectangle()
+                        .fill(waterlinePink)
+                        .frame(height: 3)
+                        .offset(y: -filledHeight + 3)
+                        .opacity(progress > 0.02 ? 1 : 0)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            }
+            .mask(Image("PigMask").resizable())
+
+            // 輪郭線・陰影線(どの割合でも、常に上に見える)
+            Image("PigLine")
+                .resizable()
+        }
+        .aspectRatio(2, contentMode: .fit)
+        // 金額が増えたときに、色がゆっくり上がるように
+        .animation(.easeInOut(duration: 1.4), value: progress)
     }
 }
 
@@ -469,6 +485,11 @@ private struct MissionCard: View {
                             .stroke(statusColor.opacity(0.35), lineWidth: 1.5)
                     )
 
+                Image(systemName: mission.displayIconName)
+                    .font(.system(size: 34))
+                    .foregroundStyle(Palette.accent.opacity(0.55))
+                    .frame(width: 150, height: 92)
+
                 Image(systemName: statusIcon)
                     .font(.title2)
                     .foregroundStyle(statusColor)
@@ -477,7 +498,7 @@ private struct MissionCard: View {
             .shadow(color: .black.opacity(0.12), radius: 6, x: 0, y: 3)
 
             Text(LocalizedStringKey(mission.title))
-                .font(.system(.subheadline, design: .rounded).bold())
+                .font(.system(.subheadline).bold())
                 .foregroundStyle(Palette.textPrimary)
                 .lineLimit(1)
 

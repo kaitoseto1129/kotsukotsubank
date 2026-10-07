@@ -32,6 +32,9 @@ struct KotsuKotsuBankApp: App {
         WindowGroup {
             ContentView()
                 .environment(session)
+                .onAppear {
+                    AnalyticsService.log(.appOpen)
+                }
         }
         .modelContainer(sharedModelContainer)
     }
